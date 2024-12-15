@@ -15,6 +15,11 @@
                 <KeyCodeCombination alt="UP" control="DOWN" meta="UP" shift="UP" shortcut="UP" code="F"/>
             </accelerator>
             </MenuItem>
+            <MenuItem mnemonicParsing="false" onAction="#saveModel" text="Save Model">
+                <accelerator>
+                    <KeyCodeCombination alt="UP" control="DOWN" meta="UP" shift="UP" shortcut="UP" code="S"/>
+                </accelerator>
+            </MenuItem>
         </Menu>
         <Menu mnemonicParsing="false" text="Camera Options">
             <MenuItem mnemonicParsing="false" onAction="#handleCameraForward" text="Forward">
@@ -48,6 +53,13 @@
                 </accelerator>
             </MenuItem>
         </Menu>
+        <Menu mnemonicParsing="false" text="Change the model">
+            <MenuItem mnemonicParsing="false" onAction="#delvertex" text="Delete vertices">
+            </MenuItem>
+            <MenuItem mnemonicParsing="false" text="Delete polygon">
+            </MenuItem>
+        </Menu>
+
     </MenuBar>
 
     <Canvas fx:id="canvas" width="1600" height="870" AnchorPane.topAnchor="30.0"/>

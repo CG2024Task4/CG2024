@@ -1,5 +1,7 @@
 package com.cgvsu;
 
+import com.cgvsu.deletevertex.DeleteVertex;
+import com.cgvsu.objwriter.ObjWriterClass;
 import com.cgvsu.render_engine.RenderEngine;
 import javafx.fxml.FXML;
 import javafx.animation.Animation;
@@ -7,14 +9,23 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
+
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.io.IOException;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import javax.vecmath.Vector3f;
 
 import com.cgvsu.model.Model;
@@ -85,6 +96,81 @@ public class GuiController {
 
         }
     }
+    @FXML
+    public void saveModel(){
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Объектные файлы", "*.obj"));
+        File file = fileChooser.showSaveDialog(null);
+
+        if (file != null) {
+            String filename = file.getAbsolutePath();
+            // Создаем экземпляр ObjWriterClass для записи модели
+            ObjWriterClass objWriter = new ObjWriterClass();
+            objWriter.write(mesh, filename);  // Сохраняем модель
+
+            System.out.println("Модель сохранена в файл: " + filename);
+        }
+        else {
+            showError("Ошибка сохранения","Нет модели");
+        }
+    }
+    // Метод для отображения сообщения об ошибке
+    private void showError(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    @FXML
+    public void delvertex(ActionEvent actionEvent){
+        // Создаем диалог для ввода списка вершин
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Удалить вершины");
+        dialog.setHeaderText("Введите ID вершин для удаления (через запятую):");
+        dialog.setContentText("Вершины:");
+
+        // Отображаем диалог и ждем ответа
+        String result = dialog.showAndWait().orElse("");
+
+        if (!result.isEmpty()) {
+            // Разделяем введенные данные на список вершин и удаляем лишние пробелы
+            String[] verticesArray = result.split(",");
+            List<Integer> verticesToDelete = new ArrayList<>();
+
+            // Преобразуем строки в целые числа и добавляем в список
+            for (String vertexStr : verticesArray) {
+                try {
+                    verticesToDelete.add(Integer.parseInt(vertexStr.trim())); // парсим строку в Integer
+                } catch (NumberFormatException e) {
+                    showError("Ошибка ввода", "Некоторые элементы не являются целыми числами.");
+                    return; // Выход из метода, если был неправильный ввод
+                }
+            }
+            boolean flag1 = askForFlag("Удалять нормали?");
+            boolean flag2 = askForFlag("Удалять текстурные вершины?");
+            // Создаем экземпляр DeleteVertex для удаления вершин
+            DeleteVertex deleteVertex = new DeleteVertex();
+            deleteVertex.deleteVertex(mesh,verticesToDelete,flag1,flag2);  // Удаляем вершины
+        } else {
+            showError("Ошибка", "Вы не ввели ни одной вершины.");
+        }
+    }
+    // Метод для запроса флажка true/false для каждой вершины
+    private boolean askForFlag(String headerText) {
+        // Создаем диалог для ввода флажка (true/false)
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("Да", "Да", "Нет");
+        dialog.setTitle("Выбор флажка");
+        dialog.setHeaderText(headerText);
+        dialog.setContentText("Выберите флажок:");
+
+        // Отображаем диалог и ждем ответа
+        String result = dialog.showAndWait().orElse("false");
+
+        return result.equals("true");
+    }
+
 
     @FXML
     public void handleCameraForward(ActionEvent actionEvent) {

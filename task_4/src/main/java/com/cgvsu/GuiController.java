@@ -50,6 +50,7 @@ public class GuiController {
     private Canvas canvas;
 
     private Model mesh = null;
+    private Model oldModel = null;
 
     private Camera camera = new Camera(
             new Vector3C(0, 0, 100),
@@ -96,7 +97,9 @@ public class GuiController {
 
         try {
             String fileContent = Files.readString(fileName);
+            oldModel = ObjReader.read(fileContent);
             mesh = ObjReader.read(fileContent);
+            mesh.triangulate();
             // todo: обработка ошибок
         } catch (IOException exception) {
 

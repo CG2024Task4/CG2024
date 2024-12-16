@@ -41,4 +41,16 @@ public class Polygon {
     public ArrayList<Integer> getNormalIndices() {
         return normalIndices;
     }
+
+    public void addVertexIndex(int index) {
+        vertexIndices.add(index);
+    }
+
+    public void addTextureVertexIndex(int index) {
+        textureVertexIndices.add(index);
+    }
+
+    public void addNormalIndex(int index) {
+        normalIndices.add(index);
+    }
 }

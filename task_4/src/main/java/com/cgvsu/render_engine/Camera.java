@@ -8,10 +8,10 @@ public class Camera {
 
     private Vector3C position;
     private Vector3C target;
-    private double fov;
+    private final double fov;
     private double aspectRatio;
-    private double nearPlane;
-    private double farPlane;
+    private final double nearPlane;
+    private final double farPlane;
 
     public Camera(Vector3C position,
                   Vector3C target,

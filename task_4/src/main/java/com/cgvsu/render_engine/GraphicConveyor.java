@@ -11,6 +11,7 @@ import javax.vecmath.Point2f;
 public class GraphicConveyor {
 
     public static Matrix4D rotateScaleTranslate() {
+        // единичная матрица
         return new Matrix4D(true);
     }
 
@@ -19,7 +20,7 @@ public class GraphicConveyor {
     }
 
     public static Matrix4D lookAt(Vector3C eye, Vector3C target, Vector3C up) {
-        Vector3C resultZ = eye.subtracted(target).normalize();
+        Vector3C resultZ = target.subtracted(eye).normalize();
         Vector3C resultX = up.crossProduct(resultZ).normalize();
         Vector3C resultY = resultZ.crossProduct(resultX);
 
@@ -62,6 +63,6 @@ public class GraphicConveyor {
 
     public static Point2f vertexToPoint(final Vector3C vertex, final int width, final int height) {
 
-        return new Point2f((float) (vertex.get(0) * width + width / 2.0F), (float) (vertex.get(1) * height + height / 2.0F));
+        return new Point2f((float) (vertex.get(0) * width + width / 2.0F), (float) (-vertex.get(1) * height + height / 2.0F));
     }
 }

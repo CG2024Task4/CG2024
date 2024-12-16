@@ -1,7 +1,7 @@
 package com.cgvsu.deletevertex;
 
-import com.cgvsu.math.typesVectors.Vector2C;
-import com.cgvsu.math.typesVectors.Vector3C;
+import com.cgvsu.math.typesVectors.Vector2f;
+import com.cgvsu.math.typesVectors.Vector3f;
 import com.cgvsu.model.Model;
 import com.cgvsu.model.Polygon;
 
@@ -27,9 +27,9 @@ public class DeleteVertex {
 
         flagDelNormal = flagDelNormal && !model.getNormals().isEmpty();
         flagDelTexV = flagDelTexV && !model.getTextureVertices().isEmpty();
-        HashMap<Integer, Vector3C> DelVert = new HashMap <>();
-        HashMap<Integer, Vector3C> DelNorml = new HashMap <>();
-        HashMap<Integer, Vector2C> DelTexVert = new HashMap <>();
+        HashMap<Integer, Vector3f> DelVert = new HashMap <>();
+        HashMap<Integer, Vector3f> DelNorml = new HashMap <>();
+        HashMap<Integer, Vector2f> DelTexVert = new HashMap <>();
 
 
         List<Polygon> polygonsToRemove = new ArrayList<>();
@@ -88,7 +88,7 @@ public class DeleteVertex {
 
 
 
-        HashMap<Integer, Vector3C> DelVert1 = new HashMap <>();
+        HashMap<Integer, Vector3f> DelVert1 = new HashMap <>();
         //висячие
         for (int index : DelVert.keySet()){
             int flag = 1;
@@ -105,8 +105,8 @@ public class DeleteVertex {
 
         model.getVertices().removeAll(DelVert1.values());
 
-        HashMap<Integer, Vector3C> DelNorml1 = new HashMap <>();
-        HashMap<Integer, Vector2C> DelTexVert1 = new HashMap <>();
+        HashMap<Integer, Vector3f> DelNorml1 = new HashMap <>();
+        HashMap<Integer, Vector2f> DelTexVert1 = new HashMap <>();
 
         if (flagDelNormal){
 

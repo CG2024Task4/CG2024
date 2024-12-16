@@ -9,14 +9,14 @@ import com.cgvsu.math.types.VectorC;
  * <p>
  * Этот класс представляет собой вектор-столбец с четырьмя элементами. Он расширяет базовый функционал класса VectorWrapperC.
  */
-public class Vector4C extends VectorWrapperC<Vector4C> {
+public class Vector4f extends VectorWrapperC<Vector4f> {
 
     /**
      * Конструктор для создания нулевого вектора размерности 4.
      * <p>
      * Инициализирует вектор размерностью 4 с нулевыми значениями.
      */
-    public Vector4C() {
+    public Vector4f() {
         super(4);
     }
 
@@ -27,12 +27,12 @@ public class Vector4C extends VectorWrapperC<Vector4C> {
      *
      * @param base массив значений, представляющий элементы вектора.
      */
-    public Vector4C(double[] base) {
+    public Vector4f(double[] base) {
         super(4, base);
     }
 
     /**
-     * Вспомогательный метод для создания нового объекта Vector4C.
+     * Вспомогательный метод для создания нового объекта Vector4f.
      * <p>
      * Этот метод используется для создания нового вектора размерности 4 на основе другого вектора VectorC.
      *
@@ -40,11 +40,11 @@ public class Vector4C extends VectorWrapperC<Vector4C> {
      * @return новый вектор размерности 4.
      */
     @Override
-    public Vector4C newMatrix(VectorC vector) {
-        return new Vector4C(vector.getBase());
+    public Vector4f newMatrix(VectorC vector) {
+        return new Vector4f(vector.getBase());
     }
 
-    public Vector4C(double x, double y, double z, double t) {
+    public Vector4f(double x, double y, double z, double t) {
         super(4, new double[]{x, y, z, t});
     }
 }

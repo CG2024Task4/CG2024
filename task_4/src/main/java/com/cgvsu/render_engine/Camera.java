@@ -1,20 +1,20 @@
 package com.cgvsu.render_engine;
 
 
-import com.cgvsu.math.typesMatrix.Matrix4D;
-import com.cgvsu.math.typesVectors.Vector3C;
+import com.cgvsu.math.typesMatrix.Matrix4f;
+import com.cgvsu.math.typesVectors.Vector3f;
 
 public class Camera {
 
-    private Vector3C position;
-    private Vector3C target;
+    private Vector3f position;
+    private Vector3f target;
     private final double fov;
     private double aspectRatio;
     private final double nearPlane;
     private final double farPlane;
 
-    public Camera(Vector3C position,
-                  Vector3C target,
+    public Camera(Vector3f position,
+                  Vector3f target,
                   double fov,
                   double aspectRatio,
                   double nearPlane,
@@ -28,11 +28,11 @@ public class Camera {
         this.farPlane = farPlane;
     }
 
-    public void setPosition(final Vector3C position) {
+    public void setPosition(final Vector3f position) {
         this.position = position;
     }
 
-    public void setTarget(final Vector3C target) {
+    public void setTarget(final Vector3f target) {
         this.target = target;
     }
 
@@ -40,27 +40,27 @@ public class Camera {
         this.aspectRatio = aspectRatio;
     }
 
-    public Vector3C getPosition() {
+    public Vector3f getPosition() {
         return position;
     }
 
-    public Vector3C getTarget() {
+    public Vector3f getTarget() {
         return target;
     }
 
-    public void movePosition(final Vector3C translation) {
+    public void movePosition(final Vector3f translation) {
         this.position.add(translation);
     }
 
-    public void moveTarget(final Vector3C translation) {
+    public void moveTarget(final Vector3f translation) {
         this.target = this.target.added(translation);
     }
 
-    public Matrix4D getViewMatrix() {
+    public Matrix4f getViewMatrix() {
         return GraphicConveyor.lookAt(position, target);
     }
 
-    public Matrix4D getProjectionMatrix() {
+    public Matrix4f getProjectionMatrix() {
         return GraphicConveyor.perspective(fov, aspectRatio, nearPlane, farPlane);
     }
 }

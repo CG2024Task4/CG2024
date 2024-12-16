@@ -2,27 +2,27 @@ package com.cgvsu.model;
 
 
 
-import com.cgvsu.math.typesVectors.Vector2C;
-import com.cgvsu.math.typesVectors.Vector3C;
+import com.cgvsu.math.typesVectors.Vector2f;
+import com.cgvsu.math.typesVectors.Vector3f;
 
 import java.util.*;
 
 public class Model {
 
-    public ArrayList<Vector3C> vertices = new ArrayList<Vector3C>();
-    public ArrayList<Vector2C> textureVertices = new ArrayList<Vector2C>();
-    public ArrayList<Vector3C> normals = new ArrayList<Vector3C>();
+    public ArrayList<Vector3f> vertices = new ArrayList<Vector3f>();
+    public ArrayList<Vector2f> textureVertices = new ArrayList<Vector2f>();
+    public ArrayList<Vector3f> normals = new ArrayList<Vector3f>();
     public ArrayList<Polygon> polygons = new ArrayList<Polygon>();
 
-    public ArrayList<Vector3C> getVertices() {
+    public ArrayList<Vector3f> getVertices() {
         return vertices;
     }
 
-    public ArrayList<Vector2C> getTextureVertices() {
+    public ArrayList<Vector2f> getTextureVertices() {
         return textureVertices;
     }
 
-    public ArrayList<Vector3C> getNormals() {
+    public ArrayList<Vector3f> getNormals() {
         return normals;
     }
 

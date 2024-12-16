@@ -1,7 +1,7 @@
 package ObjReaderTest;
 
-import com.cgvsu.math.typesVectors.Vector2C;
-import com.cgvsu.math.typesVectors.Vector3C;
+import com.cgvsu.math.typesVectors.Vector2f;
+import com.cgvsu.math.typesVectors.Vector3f;
 import com.cgvsu.objreader.ObjReader;
 import com.cgvsu.objreader.ObjReaderException;
 import org.junit.jupiter.api.Assertions;
@@ -34,16 +34,16 @@ class ObjReaderTest extends ObjReader {
     @Test
     void testParseVertex01() {
         ArrayList<String> wordsInLineWithoutToken = new ArrayList<>(Arrays.asList("1.01", "1.02", "1.03"));
-        Vector3C result = ObjReader.parseVertex(wordsInLineWithoutToken, 5);
-        Vector3C expectedResult = new Vector3C(1.01f, 1.02f, 1.03f);
+        Vector3f result = ObjReader.parseVertex(wordsInLineWithoutToken, 5);
+        Vector3f expectedResult = new Vector3f(1.01f, 1.02f, 1.03f);
         assertEquals(result, expectedResult);
     }
 
     @Test
     void testParseVertex02() {
         ArrayList<String> wordsInLineWithoutToken = new ArrayList<>(Arrays.asList("1.01", "1.02", "1"));
-        Vector3C result = ObjReader.parseVertex(wordsInLineWithoutToken, 5);
-        Vector3C expectedResult = new Vector3C(1.01f, 1.02f, 1.10f);
+        Vector3f result = ObjReader.parseVertex(wordsInLineWithoutToken, 5);
+        Vector3f expectedResult = new Vector3f(1.01f, 1.02f, 1.10f);
         Assertions.assertNotEquals(result, expectedResult);
     }
 
@@ -94,8 +94,8 @@ class ObjReaderTest extends ObjReader {
     @Test
     void testParseTextureVertex01() {
         ArrayList<String> wordsInLineWithoutToken = new ArrayList<>(Arrays.asList("1.01", "1.02"));
-        Vector2C result = ObjReader.parseTextureVertex(wordsInLineWithoutToken, 5);
-        Vector2C expectedResult = new Vector2C(1.01f, 1.02f);
+        Vector2f result = ObjReader.parseTextureVertex(wordsInLineWithoutToken, 5);
+        Vector2f expectedResult = new Vector2f(1.01f, 1.02f);
         assertEquals(result, expectedResult);
     }
 
@@ -135,8 +135,8 @@ class ObjReaderTest extends ObjReader {
     @Test
     void testParseNormal02() {
         ArrayList<String> wordsInLineWithoutToken = new ArrayList<>(Arrays.asList("1.01", "1.02", "1.03"));
-        Vector3C expectedResult = new Vector3C(1.01f, 1.02f, 1.03f);
-        Vector3C result = ObjReader.parseNormal(wordsInLineWithoutToken, 8);
+        Vector3f expectedResult = new Vector3f(1.01f, 1.02f, 1.03f);
+        Vector3f result = ObjReader.parseNormal(wordsInLineWithoutToken, 8);
         assertEquals(expectedResult, result);
     }
 

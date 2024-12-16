@@ -4,8 +4,8 @@ package com.cgvsu.render_engine;
 import com.cgvsu.model.Model;
 import javafx.scene.canvas.GraphicsContext;
 import com.cgvsu.math.core.MatrixUtils;
-import com.cgvsu.math.typesMatrix.Matrix4D;
-import com.cgvsu.math.typesVectors.Vector3C;
+import com.cgvsu.math.typesMatrix.Matrix4f;
+import com.cgvsu.math.typesVectors.Vector3f;
 
 
 import javax.vecmath.Point2f;
@@ -23,12 +23,12 @@ public class RenderEngine {
             final int height) {
 
         // Матрицы модели, вида и проекции
-        Matrix4D modelMatrix = rotateScaleTranslate();
-        Matrix4D viewMatrix = camera.getViewMatrix();
-        Matrix4D projectionMatrix = camera.getProjectionMatrix();
+        Matrix4f modelMatrix = rotateScaleTranslate();
+        Matrix4f viewMatrix = camera.getViewMatrix();
+        Matrix4f projectionMatrix = camera.getProjectionMatrix();
 
         // Итоговая матрица MVP
-        Matrix4D modelViewProjectionMatrix = MatrixUtils.multiplied(projectionMatrix, viewMatrix, modelMatrix);
+        Matrix4f modelViewProjectionMatrix = MatrixUtils.multiplied(projectionMatrix, viewMatrix, modelMatrix);
 
         final int nPolygons = mesh.polygons.size();
         for (int polygonInd = 0; polygonInd < nPolygons; ++polygonInd) {
@@ -37,8 +37,8 @@ public class RenderEngine {
             ArrayList<Point2f> resultPoints = new ArrayList<>();
             for (int vertexInPolygonInd = 0; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
                 // Получаем вершину
-                Vector3C vertex = mesh.vertices.get(mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
-                Vector3C transformedVertex = multiplyMatrix4ByVector3(modelViewProjectionMatrix, vertex);
+                Vector3f vertex = mesh.vertices.get(mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
+                Vector3f transformedVertex = multiplyMatrix4ByVector3(modelViewProjectionMatrix, vertex);
 
                 // Преобразуем в координаты экрана
                 Point2f resultPoint = vertexToPoint(multiplyMatrix4ByVector3(modelViewProjectionMatrix, vertex), width, height);

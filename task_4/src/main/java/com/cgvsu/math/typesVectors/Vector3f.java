@@ -8,14 +8,14 @@ import com.cgvsu.math.types.VectorC;
  * <p>
  * Этот класс представляет собой вектор-столбец с тремя элементами. Он расширяет базовый функционал класса VectorWrapperC.
  */
-public class Vector3C extends VectorWrapperC<Vector3C> {
+public class Vector3f extends VectorWrapperC<Vector3f> {
 
     /**
      * Конструктор для создания нулевого вектора размерности 3.
      * <p>
      * Инициализирует вектор размерностью 3 с нулевыми значениями.
      */
-    public Vector3C() {
+    public Vector3f() {
         super(3);
     }
 
@@ -26,12 +26,12 @@ public class Vector3C extends VectorWrapperC<Vector3C> {
      *
      * @param base массив значений, представляющий элементы вектора.
      */
-    public Vector3C(double[] base) {
+    public Vector3f(double[] base) {
         super(3, base);
     }
 
     /**
-     * Вспомогательный метод для создания нового объекта Vector3C.
+     * Вспомогательный метод для создания нового объекта Vector3f.
      * <p>
      * Этот метод используется для создания нового вектора размерности 3 на основе другого вектора VectorC.
      *
@@ -39,11 +39,11 @@ public class Vector3C extends VectorWrapperC<Vector3C> {
      * @return новый вектор размерности 3.
      */
     @Override
-    public Vector3C newMatrix(VectorC vector) {
-        return new Vector3C(vector.getBase());
+    public Vector3f newMatrix(VectorC vector) {
+        return new Vector3f(vector.getBase());
     }
 
-    public Vector3C(double x, double y, double z) {
+    public Vector3f(double x, double y, double z) {
         super(3, new double[]{x, y, z});
     }
 }

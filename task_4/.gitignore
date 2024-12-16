@@ -1,0 +1,93 @@
+# Системные файлы и метаданные
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+*.swn
+*.~
+*.old
+*.orig
+
+# Файлы IDE и редакторов
+.idea/
+.vscode/
+./target
+*.sublime-*
+
+# Сборка и артефакты
+build/
+out/
+dist/
+bin/
+obj/
+
+# Зависимости
+node_modules/
+vendor/
+
+# Конфигурационные файлы пользователя
+*.env
+*.env.local
+.env.*
+*.config
+*.conf
+
+# Секреты
+*.pem
+*.key
+*.crt
+*.p12
+
+# Образы и временные файлы Docker
+*.tar
+*.img
+docker-compose.override.yml
+
+# Системные файлы Linux и macOS
+*.~lock.*
+*.lock
+*.mode1v3
+*.mode2v3
+
+# Python
+*.pyc
+__pycache__/
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.iml
+*.ipr
+*.iws
+
+# C++
+*.o
+*.a
+*.so
+*.dylib
+
+# JavaScript/TypeScript
+*.tsbuildinfo
+
+# Архивы и бэкапы
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# Лог файлы
+logs/
+*.trace
+
+# Мониторинг изменений (OS специфично)
+*.state
+*.session
+
+# Temporary Files
+*.temp
+*.backup

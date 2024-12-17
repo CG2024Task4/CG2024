@@ -2,6 +2,7 @@ package com.cgvsu;
 
 import com.cgvsu.deletevertex.DeleteVertex;
 import com.cgvsu.math.typesVectors.Vector3f;
+import com.cgvsu.model.FindNormals;
 import com.cgvsu.model.Model;
 import com.cgvsu.objreader.ObjReader;
 import com.cgvsu.objwriter.ObjWriterClass;
@@ -90,7 +91,9 @@ public class GuiController {
             String fileContent = Files.readString(fileName);
             oldModel = ObjReader.read(fileContent);
             mesh = ObjReader.read(fileContent);
+            // Триангуляция и расчёт нормалей
             mesh.triangulate();
+            mesh.normals = FindNormals.findNormals(mesh);
             // todo: обработка ошибок
         } catch (IOException exception) {
 

@@ -1,5 +1,6 @@
 package com.cgvsu;
 
+import com.cgvsu.SetModels.ModelManager;
 import com.cgvsu.deletevertex.DeleteVertex;
 import com.cgvsu.math.typesVectors.Vector3f;
 import com.cgvsu.model.FindNormals;
@@ -13,11 +14,14 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ChoiceDialog;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -27,6 +31,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -41,8 +46,9 @@ public class GuiController {
     @FXML
     private Canvas canvas;
 
-    private Model mesh = null;
     private Model oldModel = null;
+
+    private ModelManager modelManager = new ModelManager();
 
     private Camera camera = new Camera(
             new Vector3f(0, 0, 100),
@@ -65,8 +71,11 @@ public class GuiController {
             canvas.getGraphicsContext2D().clearRect(0, 0, width, height);
             camera.setAspectRatio((float) (width / height));
 
-            if (mesh != null) {
-                RenderEngine.render(canvas.getGraphicsContext2D(), camera, mesh, (int) width, (int) height);
+            if (modelManager != null) {
+                for (Model model: modelManager.getModels()) {
+                    canvas.getGraphicsContext2D().setStroke(Color.WHITE);
+                    RenderEngine.render(canvas.getGraphicsContext2D(), camera, model, (int) width, (int) height);
+                }
             }
         });
 
@@ -90,10 +99,11 @@ public class GuiController {
         try {
             String fileContent = Files.readString(fileName);
             oldModel = ObjReader.read(fileContent);
-            mesh = ObjReader.read(fileContent);
+            Model model = ObjReader.read(fileContent);
             // Триангуляция и расчёт нормалей
-            mesh.triangulate();
-            mesh.normals = FindNormals.findNormals(mesh);
+            model.triangulate();
+            modelManager.addModel(model);
+            modelManager.setActiveModel(model);
             // todo: обработка ошибок
         } catch (IOException exception) {
 
@@ -109,7 +119,7 @@ public class GuiController {
             String filename = file.getAbsolutePath();
             // Создаем экземпляр ObjWriterClass для записи модели
             ObjWriterClass objWriter = new ObjWriterClass();
-            objWriter.write(mesh, filename);  // Сохраняем модель
+            objWriter.write(modelManager.getActiveModel(), filename);  // Сохраняем модель
 
             System.out.println("Модель сохранена в файл: " + filename);
         }
@@ -154,10 +164,18 @@ public class GuiController {
             boolean flag1 = askForFlag("Удалять нормали?");
             boolean flag2 = askForFlag("Удалять текстурные вершины?");
             // Создаем экземпляр DeleteVertex для удаления вершин
-            DeleteVertex deleteVertex = new DeleteVertex();
-            deleteVertex.deleteVertex(mesh,verticesToDelete,flag1,flag2);  // Удаляем вершины
+            DeleteVertex.deleteVertex(modelManager.getActiveModel(),verticesToDelete,flag1,flag2);  // Удаляем вершины
+            activeModelnull();
         } else {
             showError("Ошибка", "Вы не ввели ни одной вершины.");
+        }
+    }
+    private void activeModelnull(){
+        if(modelManager.getActiveModel().getVertices().isEmpty()){
+            modelManager.delModels(modelManager.getActiveModel());
+            if (!modelManager.getModels().isEmpty()){
+                modelManager.setActiveModel(modelManager.getModels().get(modelManager.getModels().size()-1));
+            }
         }
     }
     // Метод для запроса флажка true/false для каждой вершины
@@ -175,9 +193,10 @@ public class GuiController {
     }
 
 
+
+
     @FXML
     public void clearScene() {
-        mesh = null;
     }
 
     @FXML
@@ -208,5 +227,43 @@ public class GuiController {
     @FXML
     public void handleCameraDown(ActionEvent actionEvent) {
         camera.movePosition(new Vector3f(0, -TRANSLATION, 0));
+    }
+
+    public void setRenderStyleToColorFill(ActionEvent actionEvent) {
+    }
+
+    public void switchPolygonalGrid(ActionEvent actionEvent) {
+    }
+    @FXML
+    public void onModelSelectionChanged(ActionEvent actionEvent) {
+    }
+
+
+    public void chooseModel(ActionEvent actionEvent) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Какую модель выбрать?");
+        dialog.setHeaderText("Введите ID модели:");
+        dialog.setContentText("Модель:");
+
+        // Отображаем диалог и ждем ответа
+        String result = dialog.showAndWait().orElse("");
+
+        if (!result.isEmpty()) {
+            try {
+                modelManager.setActiveModel(modelManager.getModels().get(Integer.parseInt(result)-1));
+            } catch (NumberFormatException e) {
+                showError("Ошибка ввода", "Элемент не является целым числом.");
+            }
+        }
+    }
+
+    public void DeleteModel(ActionEvent actionEvent) {
+        modelManager.delModels(modelManager.getActiveModel());
+        if (!modelManager.getModels().isEmpty()){
+            modelManager.setActiveModel(modelManager.getModels().get(modelManager.getModels().size()-1));
+        }
+        else{
+            modelManager.setActiveModel(null);
+        }
     }
 }

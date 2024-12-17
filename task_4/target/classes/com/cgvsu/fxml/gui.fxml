@@ -7,7 +7,14 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.canvas.Canvas?>
 
-<AnchorPane fx:id="anchorPane" xmlns:fx="http://javafx.com/fxml" fx:controller="com.cgvsu.GuiController">
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckMenuItem?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<AnchorPane fx:id="anchorPane" xmlns:fx="http://javafx.com/fxml" fx:controller="com.cgvsu.GuiController" >
     <MenuBar>
         <Menu mnemonicParsing="false" text="File">
             <MenuItem mnemonicParsing="false" onAction="#onOpenModelMenuItemClick" text="Load Model">
@@ -59,8 +66,18 @@
             <MenuItem mnemonicParsing="false" text="Delete polygon">
             </MenuItem>
         </Menu>
-
+        <Menu mnemonicParsing="false"  text="Model">
+            <MenuItem mnemonicParsing="false" onAction="#chooseModel" text="Choose the model">
+            </MenuItem>
+            <MenuItem mnemonicParsing="false" onAction="#DeleteModel" text="Delete the model">
+            </MenuItem>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Render Properties">
+            <CheckMenuItem mnemonicParsing="false" onAction="#switchPolygonalGrid" text="Polygonal Grid" selected="true"/>
+            <CheckMenuItem mnemonicParsing="false" onAction="#setRenderStyleToColorFill" text="Color Fill"/>
+        </Menu>
     </MenuBar>
+
 
     <Canvas fx:id="canvas" width="1600" height="870" AnchorPane.topAnchor="30.0"/>
 </AnchorPane>

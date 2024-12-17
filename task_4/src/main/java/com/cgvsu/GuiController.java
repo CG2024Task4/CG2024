@@ -32,6 +32,7 @@ import java.util.List;
 
 
 public class GuiController {
+    private static double[][] zBuffer;
 
     final private float TRANSLATION = 0.5F;
     private Timeline timeline;
@@ -63,12 +64,19 @@ public class GuiController {
             double width = canvas.getWidth();
             double height = canvas.getHeight();
 
+            zBuffer = new double[(int) width][(int) height];
+            for (int i = 0; i < zBuffer.length; i++) {
+                for (int j = 0; j < zBuffer[i].length; j++) {
+                    zBuffer[i][j] = Double.POSITIVE_INFINITY;
+                }
+            }
+
             canvas.getGraphicsContext2D().clearRect(0, 0, width, height);
             camera.setAspectRatio((float) (width / height));
 
             if (mesh != null) {
                 canvas.getGraphicsContext2D().setStroke(Color.WHITE);
-                RenderEngine.render(canvas.getGraphicsContext2D(), camera, mesh, (int) width, (int) height);
+                RenderEngine.render(canvas.getGraphicsContext2D(), camera, mesh, (int) width, (int) height, zBuffer);
             }
         });
 

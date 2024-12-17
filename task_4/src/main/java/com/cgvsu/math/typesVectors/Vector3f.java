@@ -46,4 +46,16 @@ public class Vector3f extends VectorWrapperC<Vector3f> {
     public Vector3f(double x, double y, double z) {
         super(3, new double[]{x, y, z});
     }
+
+    public double getX() {
+        return get(0);
+    }
+
+    public double getY() {
+        return get(1);
+    }
+
+    public double getZ() {
+        return get(2);
+    }
 }

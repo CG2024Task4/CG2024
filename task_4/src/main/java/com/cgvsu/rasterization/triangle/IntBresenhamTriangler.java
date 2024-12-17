@@ -137,7 +137,7 @@ public final class IntBresenhamTriangler implements Triangler {
     }
 
     private Point2i converted(final Vector2f p) {
-        return new Vector2i((int) p.get(0), (int) p.get(1));
+        return new Vector2i((int) p.getX(), (int) p.getY());
     }
 
     private void update(final Triangle t) {

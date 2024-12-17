@@ -133,13 +133,13 @@ public final class DDATriangler implements Triangler {
         vertices.sort(new Comparator<Vector2f>() {
             @Override
             public int compare(Vector2f a, Vector2f b) {
-                if (Math.abs(a.get(1)-b.get(1)) <= 0.000001){
-                    if (Math.abs(a.get(0)-b.get(0)) <= 0.000001){
+                if (Math.abs(a.getY()-b.getY()) <= 0.000001){
+                    if (Math.abs(a.getX()-b.getX()) <= 0.000001){
                         return 0;
-                    } else if (a.get(0) > b.get(0)) {
+                    } else if (a.getX() > b.getX()) {
                         return 1;
                     } else {return -1;}
-                } else if (a.get(1) > b.get(1)) {
+                } else if (a.getY() > b.getY()) {
                     return 1;
                 } else {return -1;}
             }
@@ -149,24 +149,24 @@ public final class DDATriangler implements Triangler {
         v2 = vertices.get(1);
         v3 = vertices.get(2);
 
-        v1x = v1.get(0);
-        v1y = v1.get(1);
+        v1x = v1.getX();
+        v1y = v1.getY();
 
-        v2x = v2.get(0);
-        v2y = v2.get(1);
+        v2x = v2.getX();
+        v2y = v2.getY();
 
-        v3x = v3.get(0);
-        v3y = v3.get(1);
+        v3x = v3.getX();
+        v3y = v3.getY();
     }
 
     private void drawFlat(final Vector2f p0, final Vector2f p1, final Vector2f p2) {
-        x0 = p0.get(0);
-        y0 = p0.get(1);
+        x0 = p0.getX();
+        y0 = p0.getY();
 
-        dx1 = (p1.get(0) - x0) / (p1.get(1) - y0);
-        dx2 = (p2.get(0) - x0) / (p2.get(1) - y0);
+        dx1 = (p1.getX() - x0) / (p1.getY() - y0);
+        dx2 = (p2.getX() - x0) / (p2.getY() - y0);
 
-        limY = p1.get(1);
+        limY = p1.getY();
         if (Floats.moreThan((float) y0, (float) limY)) {
             drawFlatAtMinY();
         } else {

@@ -53,15 +53,15 @@ public class ObjWriterClass implements ObjWriter {
     }
 
     public String vertexToString(Vector3f vector) {
-        return OBJ_VERTEX_TOKEN + " " + vector.get(0) + " " + vector.get(1) + " " + vector.get(2);
+        return OBJ_VERTEX_TOKEN + " " + vector.getX() + " " + vector.getY() + " " + vector.getZ();
     }
 
     public String textureVertexToString(Vector2f vector) {
-        return OBJ_TEXTURE_TOKEN + " " + vector.get(0) + " " + vector.get(1);
+        return OBJ_TEXTURE_TOKEN + " " + vector.getX() + " " + vector.getY();
     }
 
     public String normalToString(Vector3f vector) {
-        return OBJ_NORMAL_TOKEN + " " + vector.get(0) + " " + vector.get(1) + " " + vector.get(2);
+        return OBJ_NORMAL_TOKEN + " " + vector.getX() + " " + vector.getY() + " " + vector.getZ();
     }
 
     public String polygonToString(Polygon polygon) {

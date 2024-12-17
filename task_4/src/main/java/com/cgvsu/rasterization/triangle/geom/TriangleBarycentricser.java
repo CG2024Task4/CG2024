@@ -135,14 +135,14 @@ public final class TriangleBarycentricser {
         v2 = triangle.v2();
         v3 = triangle.v3();
 
-        x1 = v1.get(0);
-        y1 = v1.get(1);
+        x1 = v1.getX();
+        y1 = v1.getY();
 
-        x2 = v2.get(0);
-        y2 = v2.get(1);
+        x2 = v2.getX();
+        y2 = v2.getY();
 
-        x3 = v3.get(0);
-        y3 = v3.get(1);
+        x3 = v3.getX();
+        y3 = v3.getY();
 
         dx13 = x1 - x3;
         dy13 = y1 - y3;
@@ -176,8 +176,8 @@ public final class TriangleBarycentricser {
     public void calculate(final Vector2f p) {
         Objects.requireNonNull(p);
 
-        x = p.get(0);
-        y = p.get(1);
+        x = p.getX();
+        y = p.getY();
 
         dx3 = x - x3;
         dy3 = y - y3;

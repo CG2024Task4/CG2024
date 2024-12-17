@@ -25,9 +25,9 @@ public class GraphicConveyor {
         Vector3f resultY = resultZ.crossProduct(resultX);
 
         double[] matrix = new double[]{
-                resultX.get(0), resultX.get(1), resultX.get(2), -resultX.dotProduct(eye),
-                resultY.get(0), resultY.get(1), resultY.get(2), -resultY.dotProduct(eye),
-                resultZ.get(0), resultZ.get(1), resultZ.get(2), -resultZ.dotProduct(eye),
+                resultX.getX(), resultX.getY(), resultX.getZ(), -resultX.dotProduct(eye),
+                resultY.getX(), resultY.getY(), resultY.getZ(), -resultY.dotProduct(eye),
+                resultZ.getX(), resultZ.getY(), resultZ.getZ(), -resultZ.dotProduct(eye),
                 0, 0, 0, 1
         };
 
@@ -46,13 +46,13 @@ public class GraphicConveyor {
     }
 
     public static Vector3f multiplyMatrix4ByVector3(final Matrix4f matrix, final Vector3f vertex) {
-        double[] baseVec4 = new double[]{vertex.get(0), vertex.get(1), vertex.get(2), 1};
+        double[] baseVec4 = new double[]{vertex.getX(), vertex.getY(), vertex.getZ(), 1};
 
         Vector4f resultVector = matrix.multiplied(new Vector4f(baseVec4));
-        double x = resultVector.get(0);
-        double y = resultVector.get(1);
-        double z = resultVector.get(2);
-        double w = resultVector.get(3);
+        double x = resultVector.getX();
+        double y = resultVector.getY();
+        double z = resultVector.getZ();
+        double w = resultVector.getW();
 
         if (w == 0) {
             return new Vector3f();
@@ -63,6 +63,6 @@ public class GraphicConveyor {
 
     public static Point2f vertexToPoint(final Vector3f vertex, final int width, final int height) {
 
-        return new Point2f((float) (vertex.get(0) * width + width / 2.0F), (float) (-vertex.get(1) * height + height / 2.0F));
+        return new Point2f((float) (vertex.getX() * width + width / 2.0F), (float) (-vertex.getY() * height + height / 2.0F));
     }
 }

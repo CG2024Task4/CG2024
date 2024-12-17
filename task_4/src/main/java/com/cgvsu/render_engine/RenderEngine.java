@@ -2,20 +2,17 @@ package com.cgvsu.render_engine;
 
 
 import com.cgvsu.model.Model;
-import com.cgvsu.math.typesVectors.Vector2f;
-import com.cgvsu.rasterization.triangle.DDATriangler;
-import com.cgvsu.rasterization.triangle.Triangler;
-import com.cgvsu.rasterization.triangle.geom.Polygon3;
-import com.cgvsu.rasterization.triangle.geom.Triangle;
+import com.cgvsu.rasterization.Rasterization;
 import javafx.scene.canvas.GraphicsContext;
 import com.cgvsu.math.core.MatrixUtils;
 import com.cgvsu.math.typesMatrix.Matrix4f;
 import com.cgvsu.math.typesVectors.Vector3f;
+import javafx.scene.paint.Color;
 
 
 import javax.vecmath.Point2f;
+import java.awt.*;
 import java.util.ArrayList;
-import java.util.List;
 
 import static com.cgvsu.render_engine.GraphicConveyor.*;
 
@@ -72,13 +69,10 @@ public class RenderEngine {
             }
 
             // Растеризация полигонов
-            final Triangler triangler = new DDATriangler(graphicsContext);
-            Vector2f point1 = new Vector2f(resultPoints.get(0).x, resultPoints.get(0).y);
-            Vector2f point2 = new Vector2f(resultPoints.get(1).x, resultPoints.get(1).y);
-            Vector2f point3 = new Vector2f(resultPoints.get(2).x, resultPoints.get(2).y);
-            Triangle triangle = new Polygon3(point1, point2, point3);
-
-            triangler.draw(triangle);
+            int[] arrX = {(int) resultPoints.get(0).x, (int) resultPoints.get(1).x, (int) resultPoints.get(2).x};
+            int[] arrY = {(int) resultPoints.get(0).y, (int) resultPoints.get(1).y, (int) resultPoints.get(2).y};
+            javafx.scene.paint.Color[] colors = {Color.DARKGRAY, Color.DARKGRAY, Color.DARKGRAY};
+            Rasterization.fillTriangle(graphicsContext, arrX, arrY, colors);
         }
     }
 }

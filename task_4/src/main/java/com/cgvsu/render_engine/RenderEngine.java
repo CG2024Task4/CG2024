@@ -2,6 +2,11 @@ package com.cgvsu.render_engine;
 
 
 import com.cgvsu.model.Model;
+import com.cgvsu.math.typesVectors.Vector2f;
+import com.cgvsu.rasterization.triangle.DDATriangler;
+import com.cgvsu.rasterization.triangle.Triangler;
+import com.cgvsu.rasterization.triangle.geom.Polygon3;
+import com.cgvsu.rasterization.triangle.geom.Triangle;
 import javafx.scene.canvas.GraphicsContext;
 import com.cgvsu.math.core.MatrixUtils;
 import com.cgvsu.math.typesMatrix.Matrix4f;
@@ -10,6 +15,7 @@ import com.cgvsu.math.typesVectors.Vector3f;
 
 import javax.vecmath.Point2f;
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.cgvsu.render_engine.GraphicConveyor.*;
 
@@ -33,6 +39,8 @@ public class RenderEngine {
         final int nPolygons = mesh.polygons.size();
         for (int polygonInd = 0; polygonInd < nPolygons; ++polygonInd) {
             final int nVerticesInPolygon = mesh.polygons.get(polygonInd).getVertexIndices().size();
+
+
 
             ArrayList<Point2f> resultPoints = new ArrayList<>();
             for (int vertexInPolygonInd = 0; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
@@ -62,6 +70,15 @@ public class RenderEngine {
                         resultPoints.get(0).x,
                         resultPoints.get(0).y);
             }
+
+            // Растеризация полигонов
+            final Triangler triangler = new DDATriangler(graphicsContext);
+            Vector2f point1 = new Vector2f(resultPoints.get(0).x, resultPoints.get(0).y);
+            Vector2f point2 = new Vector2f(resultPoints.get(1).x, resultPoints.get(1).y);
+            Vector2f point3 = new Vector2f(resultPoints.get(2).x, resultPoints.get(2).y);
+            Triangle triangle = new Polygon3(point1, point2, point3);
+
+            triangler.draw(triangle);
         }
     }
 }

@@ -3,7 +3,6 @@ package com.cgvsu;
 import com.cgvsu.SetModels.ModelManager;
 import com.cgvsu.deletevertex.DeleteVertex;
 import com.cgvsu.math.typesVectors.Vector3f;
-import com.cgvsu.model.FindNormals;
 import com.cgvsu.model.Model;
 import com.cgvsu.objreader.ObjReader;
 import com.cgvsu.objwriter.ObjWriterClass;
@@ -14,13 +13,9 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -31,7 +26,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 
@@ -104,9 +98,12 @@ public class GuiController {
             model.triangulate();
             modelManager.addModel(model);
             modelManager.setActiveModel(model);
-            // todo: обработка ошибок
         } catch (IOException exception) {
-
+            showError("Ошибка чтения файла", "Не удалось прочитать файл"+ exception.getMessage());
+        } /*catch (InvalidFileFormatException exception) {
+            showError("Некорректный файл", "Файл имеет неправильный формат"+ exception.getMessage());
+        }*/ catch (Exception exception) {
+            showError("Неизвестная ошибка", "Произошла неизвестная ошибка" + exception.getMessage());
         }
     }
     @FXML
@@ -164,7 +161,9 @@ public class GuiController {
             boolean flag1 = askForFlag("Удалять нормали?");
             boolean flag2 = askForFlag("Удалять текстурные вершины?");
             // Создаем экземпляр DeleteVertex для удаления вершин
-            DeleteVertex.deleteVertex(modelManager.getActiveModel(),verticesToDelete,flag1,flag2);  // Удаляем вершины
+
+            DeleteVertex.deleteVertex(modelManager.getActiveModel(),verticesToDelete,flag1,flag2) ;
+            // Удаляем вершины
             activeModelnull();
         } else {
             showError("Ошибка", "Вы не ввели ни одной вершины.");
@@ -172,6 +171,7 @@ public class GuiController {
     }
     private void activeModelnull(){
         if(modelManager.getActiveModel().getVertices().isEmpty()){
+            System.out.println(1);
             modelManager.delModels(modelManager.getActiveModel());
             if (!modelManager.getModels().isEmpty()){
                 modelManager.setActiveModel(modelManager.getModels().get(modelManager.getModels().size()-1));
@@ -253,6 +253,9 @@ public class GuiController {
                 modelManager.setActiveModel(modelManager.getModels().get(Integer.parseInt(result)-1));
             } catch (NumberFormatException e) {
                 showError("Ошибка ввода", "Элемент не является целым числом.");
+            }
+            catch (IndexOutOfBoundsException e){
+                showError("Ошибка выбора модели","Индекса такой модели нет");
             }
         }
     }

@@ -5,12 +5,22 @@ import com.cgvsu.math.typesVectors.Vector3f;
 import com.cgvsu.model.Model;
 import com.cgvsu.model.Polygon;
 
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+
+import com.cgvsu.math.typesVectors.Vector2f;
+import com.cgvsu.math.typesVectors.Vector3f;
+import com.cgvsu.model.Model;
+import com.cgvsu.model.Polygon;
+
 import java.util.*;
 
 public class DeleteVertex {
-    public  static Model changeModel(Model model,List<Integer> verticesToRemoveIndices,boolean flagDelNormal, boolean flagDelTexV) {
+    public static Model changeModel(Model model, List<Integer> verticesToRemoveIndices, boolean flagDelNormal, boolean flagDelTexV) {
         Model model1 = model;
-        deleteVertex(model1,verticesToRemoveIndices, flagDelNormal, flagDelTexV);
+        deleteVertex(model1, verticesToRemoveIndices, flagDelNormal, flagDelTexV);
         return model1;
     }
 
@@ -27,9 +37,9 @@ public class DeleteVertex {
 
         flagDelNormal = flagDelNormal && !model.getNormals().isEmpty();
         flagDelTexV = flagDelTexV && !model.getTextureVertices().isEmpty();
-        HashMap<Integer, Vector3f> DelVert = new HashMap <>();
-        HashMap<Integer, Vector3f> DelNorml = new HashMap <>();
-        HashMap<Integer, Vector2f> DelTexVert = new HashMap <>();
+        HashMap<Integer, Vector3f> DelVert = new HashMap<>();
+        HashMap<Integer, Vector3f> DelNorml = new HashMap<>();
+        HashMap<Integer, Vector2f> DelTexVert = new HashMap<>();
 
 
         List<Polygon> polygonsToRemove = new ArrayList<>();
@@ -40,7 +50,7 @@ public class DeleteVertex {
             for (Integer vertexIndex : verticesToRemoveIndices) {
                 if (polygon.getVertexIndices().contains(vertexIndex - 1)) {
                     polygonsToRemove.add(polygon);
-                    for (int i=0;i < polygon.getVertexIndices().size();i++) {
+                    for (int i = 0; i < polygon.getVertexIndices().size(); i++) {
                         DelVert.put(polygon.getVertexIndices().get(i), model.getVertices().get(polygon.getVertexIndices().get(i)));
 
                         if (flagDelNormal) {
@@ -87,10 +97,9 @@ public class DeleteVertex {
 //        }
 
 
-
-        HashMap<Integer, Vector3f> DelVert1 = new HashMap <>();
+        HashMap<Integer, Vector3f> DelVert1 = new HashMap<>();
         //висячие
-        for (int index : DelVert.keySet()){
+        for (int index : DelVert.keySet()) {
             int flag = 1;
             for (Polygon polygon : polygons) {
                 if (polygon.getVertexIndices().contains(index)) {
@@ -99,18 +108,18 @@ public class DeleteVertex {
                 }
             }
             if (flag == 1) {
-                DelVert1.put(index,DelVert.get(index));
+                DelVert1.put(index, DelVert.get(index));
             }
         }
 
         model.getVertices().removeAll(DelVert1.values());
 
-        HashMap<Integer, Vector3f> DelNorml1 = new HashMap <>();
-        HashMap<Integer, Vector2f> DelTexVert1 = new HashMap <>();
+        HashMap<Integer, Vector3f> DelNorml1 = new HashMap<>();
+        HashMap<Integer, Vector2f> DelTexVert1 = new HashMap<>();
 
-        if (flagDelNormal){
+        if (flagDelNormal) {
 
-            for (int  index : DelVert1.keySet()){
+            for (int index : DelVert1.keySet()) {
                 int flag = 1;
                 for (Polygon polygon : polygons) {
                     if (polygon.getNormalIndices().contains(index)) {
@@ -119,14 +128,14 @@ public class DeleteVertex {
                     }
                 }
                 if (flag == 1) {
-                    DelNorml1.put(index,DelNorml.get(index));
+                    DelNorml1.put(index, DelNorml.get(index));
                 }
             }
             model.getNormals().removeAll(DelNorml1.values());
         }
 
-        if (flagDelTexV){
-            for (int  index : DelTexVert.keySet()){
+        if (flagDelTexV) {
+            for (int index : DelTexVert.keySet()) {
                 int flag = 1;
                 for (Polygon polygon : polygons) {
                     if (polygon.getTextureVertexIndices().contains(index)) {
@@ -135,14 +144,11 @@ public class DeleteVertex {
                     }
                 }
                 if (flag == 1) {
-                    DelTexVert1.put(index,DelTexVert.get(index));
+                    DelTexVert1.put(index, DelTexVert.get(index));
                 }
             }
             model.getTextureVertices().removeAll(DelTexVert1.values());
         }
-
-
-
 
 
 //            for (Vector3f s : normalsToRemove){
@@ -156,8 +162,8 @@ public class DeleteVertex {
         for (Polygon polygon : polygons) {
             for (int i = 0; i < polygon.getVertexIndices().size(); i++) {
                 int index = polygon.getVertexIndices().get(i);
-                int del= index;
-                for (int indexDel: DelVert1.keySet()) {
+                int del = index;
+                for (int indexDel : DelVert1.keySet()) {
                     if (index > indexDel) {
                         del--;
                     }
@@ -168,9 +174,9 @@ public class DeleteVertex {
                 for (int i = 0; i < polygon.getNormalIndices().size(); i++) {
                     int index = polygon.getNormalIndices().get(i);
                     int del = index;
-                    for (int indexDel : DelVert1.keySet()){
+                    for (int indexDel : DelVert1.keySet()) {
 
-                        if (index > indexDel)  {
+                        if (index > indexDel) {
                             del--;
                         }
                     }
@@ -182,8 +188,8 @@ public class DeleteVertex {
                 for (int i = 0; i < polygon.getTextureVertexIndices().size(); i++) {
                     int index = polygon.getTextureVertexIndices().get(i);
                     int del = index;
-                    for (int indexDel : DelTexVert1.keySet()){
-                        if (index > indexDel)  {
+                    for (int indexDel : DelTexVert1.keySet()) {
+                        if (index > indexDel) {
                             del--;
                         }
                     }
@@ -195,3 +201,65 @@ public class DeleteVertex {
         }
     }
 }
+
+
+
+
+
+/*public class DeleteVertex {
+    public static void deleteVertex(Model model, List<Integer> verticesToRemoveIndices, boolean flagDelNormal, boolean flagDelTexV) {
+        Model model1 = new Model();
+        verticesToRemoveIndices.replaceAll(integer -> integer - 1);
+        flagDelNormal = flagDelNormal && !model.getNormals().isEmpty();
+        flagDelTexV = flagDelTexV && !model.getTextureVertices().isEmpty();
+
+        SortedSet<Integer> DelVert = new TreeSet<>();
+        SortedSet<Integer> DelNormal = new TreeSet<>();
+        SortedSet<Integer> DelTextVert = new TreeSet<>();
+
+        for (Polygon polygon : model.getPolygons()) {
+            boolean flag = true;
+            for (int vertDel: verticesToRemoveIndices) {
+                if (polygon.getVertexIndices().contains(vertDel)) {
+                    DelVert.addAll(polygon.getVertexIndices());
+                    if (flagDelNormal){
+                        DelNormal.addAll(polygon.getNormalIndices());
+                    }
+                    if (flagDelTexV){
+                        DelTextVert.addAll(polygon.getTextureVertexIndices());
+                    }
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag) {
+                model1.getPolygons().add(polygon);
+                for (int vertexIndex : polygon.getVertexIndices()) {
+                    model1.getVertices().add(model.getVertices().get(vertexIndex));
+                    DelVert.remove(vertexIndex);
+                }
+                if (flagDelNormal) {
+                    for (int normalIndex : polygon.getNormalIndices()) {
+                        model1.getNormals().add(model.getNormals().get(normalIndex));
+                    }
+                }
+                if (flagDelTexV) {
+                    for (int textVertIndex : polygon.getTextureVertexIndices()) {
+                        model1.getTextureVertices().add(model.getTextureVertices().get(textVertIndex));
+                    }
+                }
+            }
+        }
+
+        for (Polygon polygon : model1.getPolygons()) {
+            polygon.getVertexIndices().replaceAll(integer -> integer - DelVert.headSet(integer).size());
+            if (flagDelNormal) {
+                polygon.getNormalIndices().replaceAll(integer -> integer - DelNormal.headSet(integer).size());
+            }
+            if (flagDelTexV){
+                polygon.getTextureVertexIndices().replaceAll(integer -> integer - DelTextVert.headSet(integer).size());
+            }
+        }
+        model=model1;
+    }
+}*/

@@ -2,6 +2,7 @@ package com.cgvsu.render_engine;
 
 
 
+import com.cgvsu.math.ATTransformator;
 import com.cgvsu.math.typesMatrix.Matrix4f;
 import com.cgvsu.math.typesVectors.Vector3f;
 import com.cgvsu.math.typesVectors.Vector4f;
@@ -11,8 +12,10 @@ import javax.vecmath.Point2f;
 public class GraphicConveyor {
 
     public static Matrix4f rotateScaleTranslate() {
-        // единичная матрица
-        return new Matrix4f(true);
+        ATTransformator.ATBuilder builder = new ATTransformator.ATBuilder();
+        ATTransformator transformator = builder.translateByCoordinates(0, 0, 0).build();
+        Matrix4f matrix = transformator.getTransformationMatrix();
+        return matrix;
     }
 
     public static Matrix4f lookAt(Vector3f eye, Vector3f target) {

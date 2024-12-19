@@ -16,6 +16,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
@@ -34,6 +36,12 @@ public class GuiController {
     private static double[][] zBuffer;
 
     final private float TRANSLATION = 0.5F;
+
+    //Поля для управления мышкой
+
+    private double startX;
+    private double startY;
+
     private Timeline timeline;
 
     @FXML
@@ -213,17 +221,6 @@ public class GuiController {
 
 
 
-
-    @FXML
-    public void handleCameraForward(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(0, 0, -TRANSLATION));
-    }
-
-    @FXML
-    public void handleCameraBackward(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(0, 0, TRANSLATION));
-    }
-
     @FXML
     public void handleCameraLeft(ActionEvent actionEvent) {
         camera.movePosition(new Vector3f(-TRANSLATION, 0, 0));
@@ -305,5 +302,22 @@ public class GuiController {
     }
 
     public void texture(ActionEvent actionEvent) {
+    }
+
+    @FXML
+    public void mouseCameraZoom(ScrollEvent scrollEvent) {
+        camera.mouseCameraZoom(scrollEvent.getDeltaY());
+    }
+
+    @FXML
+    public void fixStartCoordinates(MouseEvent mouseEvent) {
+        startX = mouseEvent.getX();
+        startY = mouseEvent.getY();
+    }
+
+    public void mouseCameraMove(MouseEvent mouseEvent) {
+//        camera.mouseCameraMove(startX - mouseEvent.getX(), startY - mouseEvent.getY());
+        startX = mouseEvent.getX();
+        startY = mouseEvent.getY();
     }
 }

@@ -275,4 +275,13 @@ public class GuiController {
             modelManager.setActiveModel(null);
         }
     }
+
+    public void triangulation(ActionEvent actionEvent) {
+    }
+
+    public void lightig(ActionEvent actionEvent) {
+    }
+
+    public void texture(ActionEvent actionEvent) {
+    }
 }

@@ -1,0 +1,93 @@
+/* Общий фон приложения */
+.root {
+    -fx-background-color: #2b2b2b; /* Тёмно-серый фон */
+    -fx-text-fill: #d0d0d0;        /* Светлый текст */
+}
+
+
+/* Стили кнопок */
+
+.button {
+    -fx-background-color: #3c3f41; /* Серый фон кнопки */
+    -fx-text-fill: #ffffff;        /* Белый текст кнопки */
+    -fx-background-radius: 5;      /* Скругление углов */
+}
+
+.button:hover {
+    -fx-background-color: #4b4e50; /* Цвет кнопки при наведении */
+}
+
+/* Стили текстовых полей */
+.text-field {
+    -fx-background-color: #3c3f41; /* Серый фон текстового поля */
+    -fx-text-fill: #d0d0d0;        /* Светлый текст */
+    -fx-border-color: #555555;     /* Цвет границы */
+    -fx-background-radius: 5;      /* Скруглённые углы */
+}
+
+/* Стили меток (текст) (Label) */
+.label {
+    -fx-text-fill: #d0d0d0; /* Светлый текст */
+}
+
+/* Стили панелей и контейнеров */
+.vbox, .hbox, .grid-pane {
+    -fx-background-color: #262626; /* Тёмный фон для контейнеров */
+}
+
+.menu-bar {
+    -fx-background-color: #262626; /* Тёмный фон панели меню */
+    -fx-border-color: transparent;
+}
+/*кнопочки*/
+.menu {
+    -fx-background-color: #262626;
+}
+/*кнопочки внутри кнопочек*/
+.menu-item {
+    -fx-background-color: #262626; /* Тёмный фон кнопок меню */
+    -fx-text-fill: #ffffff; /* Белый цвет текста */
+    -fx-border-color: transparent; /* Убираем обводку */
+    -fx-border-width: 0;
+}
+
+.menu-item:hover {
+    -fx-background-color: #4b4e50; /* Цвет при наведении */
+}
+
+.menu-item:focused {
+    -fx-background-color: #4b4e50; /* Цвет при фокусе */
+    -fx-border-color: transparent; /* Убираем рамку при фокусе */
+}
+/* рамка доп кнопок*/
+.context-menu {
+    -fx-background-color: #262626; /* Фон контекстного меню */
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-effect: none; /* Убираем тень */
+}
+
+
+VBox {
+    -fx-background-color: #262626; /* Темный фон */
+    -fx-padding: 10;
+    -fx-border-color: #1f1f1f; /* Граница */
+    -fx-border-width: 2;
+    -fx-border-radius: 5;
+}
+
+Button {
+    -fx-background-color: #5E81AC;
+    -fx-text-fill: white;
+    -fx-border-radius: 5;
+}
+
+TextField {
+    -fx-background-color: #ECEFF4;
+}
+
+
+
+
+
+

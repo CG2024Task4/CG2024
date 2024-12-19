@@ -77,7 +77,7 @@ public class GuiController {
             if (modelManager != null) {
                 for (Model model: modelManager.getModels()) {
                     canvas.getGraphicsContext2D().setStroke(Color.WHITE);
-                    RenderEngine.render(canvas.getGraphicsContext2D(), camera, model, (int) width, (int) height);
+                    RenderEngine.render(canvas.getGraphicsContext2D(), camera, model, (int) width, (int) height, zBuffer);
                 }
             }
         });
@@ -204,10 +204,6 @@ public class GuiController {
 
 
 
-    @FXML
-    public void clearScene() {
-        mesh = null;
-    }
 
     @FXML
     public void handleCameraForward(ActionEvent actionEvent) {

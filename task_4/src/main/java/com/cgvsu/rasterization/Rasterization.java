@@ -14,7 +14,9 @@ public class Rasterization {
             final int[] arrY,
             final double[] arrZ,
             final Color[] colors,
-            double[][] zBuffer) {
+            double[][] zBuffer,
+            boolean polyGrid,
+            boolean coloring) {
 
         final PixelWriter pixelWriter = graphicsContext.getPixelWriter();
 
@@ -32,9 +34,9 @@ public class Rasterization {
                 double z = arrZ[0]*barizenticCoordinate[0] + arrZ[1]*barizenticCoordinate[1] + arrZ[2]*barizenticCoordinate[2];
                 if (z < zBuffer[x][y]) {
                     zBuffer[x][y] = z;
-                    if (barizenticCoordinate[0] < 0.02 || barizenticCoordinate[1] < 0.02 || barizenticCoordinate[2] < 0.02){
+                    if ((barizenticCoordinate[0] < 0.02 || barizenticCoordinate[1] < 0.02 || barizenticCoordinate[2] < 0.02) & polyGrid){
                         pixelWriter.setColor(x, y, Color.BLACK);
-                    } else{ pixelWriter.setColor(x, y, getColor(barizenticCoordinate, colors));}
+                    } else if (coloring){ pixelWriter.setColor(x, y, getColor(barizenticCoordinate, colors));}
                 }
             }
         }
@@ -51,9 +53,9 @@ public class Rasterization {
                 double z = arrZ[0]*barizenticCoordinate[0] + arrZ[1]*barizenticCoordinate[1] + arrZ[2]*barizenticCoordinate[2];
                 if (z < zBuffer[x][y]) {
                     zBuffer[x][y] = z;
-                    if (barizenticCoordinate[0] < 0.02 || barizenticCoordinate[1] < 0.02 || barizenticCoordinate[2] < 0.02){
+                    if ((barizenticCoordinate[0] < 0.02 || barizenticCoordinate[1] < 0.02 || barizenticCoordinate[2] < 0.02) & polyGrid){
                         pixelWriter.setColor(x, y, Color.BLACK);
-                    } else{ pixelWriter.setColor(x, y, getColor(barizenticCoordinate, colors));}
+                    } else if (coloring){ pixelWriter.setColor(x, y, getColor(barizenticCoordinate, colors));}
                 }
             }
         }

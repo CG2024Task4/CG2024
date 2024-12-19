@@ -1,6 +1,7 @@
 package com.cgvsu.render_engine;
 
 
+import com.cgvsu.GuiController;
 import com.cgvsu.model.Model;
 import com.cgvsu.rasterization.Rasterization;
 import javafx.scene.canvas.GraphicsContext;
@@ -24,7 +25,9 @@ public class RenderEngine {
             final Model mesh,
             final int width,
             final int height,
-            double[][] zBuffer) {
+            double[][] zBuffer,
+            boolean polyGrid,
+            boolean coloring) {
 
         // Матрицы модели, вида и проекции
         Matrix4f modelMatrix = rotateScaleTranslate();
@@ -57,7 +60,7 @@ public class RenderEngine {
             int[] arrY = {(int) resultPoints.get(0).y, (int) resultPoints.get(1).y, (int) resultPoints.get(2).y};
             double[] arrZ = {arrayZ.get(0), arrayZ.get(1), arrayZ.get(2)};
             javafx.scene.paint.Color[] colors = {Color.DARKGRAY, Color.DARKGRAY, Color.DARKGRAY};
-            Rasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, colors, zBuffer);
+            Rasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, colors, zBuffer, polyGrid, coloring);
         }
     }
 }

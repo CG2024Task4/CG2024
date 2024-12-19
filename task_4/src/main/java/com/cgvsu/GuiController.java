@@ -44,7 +44,15 @@ public class GuiController {
 
     private Model oldModel = null;
 
+    private Model triangulatedModel = null;
+
+    private boolean triangulated = false;
+
     private ModelManager modelManager = new ModelManager();
+
+    private boolean polyGrid = false;
+
+    private boolean coloring = true;
 
     private Camera camera = new Camera(
             new Vector3f(0, 0, 100),
@@ -77,7 +85,8 @@ public class GuiController {
             if (modelManager != null) {
                 for (Model model: modelManager.getModels()) {
                     canvas.getGraphicsContext2D().setStroke(Color.WHITE);
-                    RenderEngine.render(canvas.getGraphicsContext2D(), camera, model, (int) width, (int) height, zBuffer);
+                    RenderEngine.render(canvas.getGraphicsContext2D(), camera, model, (int) width, (int) height,
+                            zBuffer, polyGrid, coloring);
                 }
             }
         });
@@ -102,11 +111,11 @@ public class GuiController {
         try {
             String fileContent = Files.readString(fileName);
             oldModel = ObjReader.read(fileContent);
-            Model model = ObjReader.read(fileContent);
+            triangulatedModel = ObjReader.read(fileContent);
             // Триангуляция и расчёт нормалей
-            model.triangulate();
-            modelManager.addModel(model);
-            modelManager.setActiveModel(model);
+            triangulatedModel.triangulate();
+            modelManager.addModel(oldModel);
+            modelManager.setActiveModel(oldModel);
         } catch (IOException exception) {
             showError("Ошибка чтения файла", "Не удалось прочитать файл"+ exception.getMessage());
         } /*catch (InvalidFileFormatException exception) {
@@ -236,9 +245,11 @@ public class GuiController {
     }
 
     public void setRenderStyleToColorFill(ActionEvent actionEvent) {
+        coloring = !coloring;
     }
 
     public void switchPolygonalGrid(ActionEvent actionEvent) {
+        polyGrid = !polyGrid;
     }
     @FXML
     public void onModelSelectionChanged(ActionEvent actionEvent) {
@@ -277,9 +288,20 @@ public class GuiController {
     }
 
     public void triangulation(ActionEvent actionEvent) {
+        if (triangulated){
+            modelManager.delModels(triangulatedModel);
+            modelManager.addModel(oldModel);
+            modelManager.setActiveModel(oldModel);
+            triangulated = false;
+        } else {
+            modelManager.delModels(oldModel);
+            modelManager.addModel(triangulatedModel);
+            modelManager.setActiveModel(triangulatedModel);
+            triangulated = true;
+        }
     }
 
-    public void lightig(ActionEvent actionEvent) {
+    public void lightning(ActionEvent actionEvent) {
     }
 
     public void texture(ActionEvent actionEvent) {

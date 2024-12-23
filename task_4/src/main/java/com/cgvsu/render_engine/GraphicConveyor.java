@@ -1,19 +1,18 @@
 package com.cgvsu.render_engine;
 
-
-
 import com.cgvsu.math.ATTransformator;
 import com.cgvsu.math.typesMatrix.Matrix4f;
+import com.cgvsu.math.typesVectors.Vector2f;
 import com.cgvsu.math.typesVectors.Vector3f;
 import com.cgvsu.math.typesVectors.Vector4f;
-
-import javax.vecmath.Point2f;
+import com.cgvsu.model.Model;
 
 public class GraphicConveyor {
 
-    public static Matrix4f rotateScaleTranslate() {
+    public static Matrix4f rotateScaleTranslate(Model model) {
         ATTransformator.ATBuilder builder = new ATTransformator.ATBuilder();
-        ATTransformator transformator = builder.translateByCoordinates(0, 0, 0).build();
+        Vector3f center = model.getCenter().multiplied(-1);
+        ATTransformator transformator = builder.translateByVector(center).build();
         Matrix4f matrix = transformator.getTransformationMatrix();
         return matrix;
     }
@@ -64,8 +63,8 @@ public class GraphicConveyor {
         return new Vector3f(x / w, y / w, z / w);
     }
 
-    public static Point2f vertexToPoint(final Vector3f vertex, final int width, final int height) {
+    public static Vector2f vertexToPoint(final Vector3f vertex, final int width, final int height) {
 
-        return new Point2f((float) (vertex.getX() * width + width / 2.0F), (float) (-vertex.getY() * height + height / 2.0F));
+        return new Vector2f((vertex.getX() * width + width / 2.0), (-vertex.getY() * height + height / 2.0));
     }
 }

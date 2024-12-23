@@ -30,6 +30,17 @@ public class Model {
         return polygons;
     }
 
+    public Vector3f getCenter() {
+        if (vertices.isEmpty()) {
+            return new Vector3f(0, 0, 0);
+        }
+        Vector3f sum = new Vector3f(0, 0, 0);
+        for (Vector3f vertex : vertices) {
+            sum = sum.added(vertex);
+        }
+        return sum.divided(vertices.size());
+    }
+
     // Метод для триангуляции всех полигонов модели
     public void triangulate() {
         ArrayList<Polygon> triangulatedPolygons = new ArrayList<>(); // Новый список для хранения триангулированных полигонов

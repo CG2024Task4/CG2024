@@ -35,7 +35,7 @@ public class Rasterization {
                 if (z < zBuffer[x][y]) {
                     zBuffer[x][y] = z;
                     if ((barizenticCoordinate[0] < 0.02 || barizenticCoordinate[1] < 0.02 || barizenticCoordinate[2] < 0.02) & polyGrid){
-                        pixelWriter.setColor(x, y, Color.BLACK);
+                        pixelWriter.setColor(x, y, Color.WHITE);
                     } else if (coloring){ pixelWriter.setColor(x, y, getColor(barizenticCoordinate, colors));}
                 }
             }
@@ -54,7 +54,7 @@ public class Rasterization {
                 if (z < zBuffer[x][y]) {
                     zBuffer[x][y] = z;
                     if ((barizenticCoordinate[0] < 0.02 || barizenticCoordinate[1] < 0.02 || barizenticCoordinate[2] < 0.02) & polyGrid){
-                        pixelWriter.setColor(x, y, Color.BLACK);
+                        pixelWriter.setColor(x, y, Color.WHITE);
                     } else if (coloring){ pixelWriter.setColor(x, y, getColor(barizenticCoordinate, colors));}
                 }
             }

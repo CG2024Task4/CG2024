@@ -16,6 +16,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
@@ -89,6 +90,9 @@ public class GuiController {
 
             canvas.getGraphicsContext2D().clearRect(0, 0, width, height);
             camera.setAspectRatio((float) (width / height));
+            canvas.setOnMousePressed(this::handleMousePressed);
+            canvas.setOnMouseDragged(this::handleMouseDragged);
+            canvas.setOnScroll(this::mouseCameraZoom);
 
             if (modelManager != null) {
                 for (Model model: modelManager.getModels()) {
@@ -218,29 +222,6 @@ public class GuiController {
         return result.equals("true");
     }
 
-
-
-
-    @FXML
-    public void handleCameraLeft(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(-TRANSLATION, 0, 0));
-    }
-
-    @FXML
-    public void handleCameraRight(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(TRANSLATION, 0, 0));
-    }
-
-    @FXML
-    public void handleCameraUp(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(0, TRANSLATION, 0));
-    }
-
-    @FXML
-    public void handleCameraDown(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(0, -TRANSLATION, 0));
-    }
-
     public void setRenderStyleToColorFill(ActionEvent actionEvent) {
         coloring = !coloring;
     }
@@ -250,6 +231,10 @@ public class GuiController {
     }
     @FXML
     public void onModelSelectionChanged(ActionEvent actionEvent) {
+//        ATTransformator.ATBuilder builder = new ATTransformator.ATBuilder();
+//        ATTransformator transformator = builder.translateByCoordinates(0, 0, 0).build();
+//        Matrix4f matrix = transformator.getTransformationMatrix();
+//        modelManager.getActiveModel() =
     }
 
 
@@ -309,15 +294,30 @@ public class GuiController {
         camera.mouseCameraZoom(scrollEvent.getDeltaY());
     }
 
-    @FXML
-    public void fixStartCoordinates(MouseEvent mouseEvent) {
+    private void handleMousePressed(MouseEvent mouseEvent) {
         startX = mouseEvent.getX();
         startY = mouseEvent.getY();
     }
 
-    public void mouseCameraMove(MouseEvent mouseEvent) {
-//        camera.mouseCameraMove(startX - mouseEvent.getX(), startY - mouseEvent.getY());
+    @FXML
+    public void mouseCameraOrbit(MouseEvent mouseEvent) {
+        camera.mouseOrbit(startX - mouseEvent.getX(), startY - mouseEvent.getY());
         startX = mouseEvent.getX();
         startY = mouseEvent.getY();
+    }
+
+    @FXML
+    public void mouseCameraMove(MouseEvent mouseEvent) {
+        camera.mousePan(startX - mouseEvent.getX(), startY - mouseEvent.getY());
+        startX = mouseEvent.getX();
+        startY = mouseEvent.getY();
+    }
+
+    private void handleMouseDragged(MouseEvent mouseEvent) {
+        if (mouseEvent.getButton() == MouseButton.PRIMARY) { // Правая кнопка
+            mouseCameraOrbit(mouseEvent);
+        } else if (mouseEvent.getButton() == MouseButton.MIDDLE) { // Средняя кнопка
+            mouseCameraMove(mouseEvent);
+        }
     }
 }

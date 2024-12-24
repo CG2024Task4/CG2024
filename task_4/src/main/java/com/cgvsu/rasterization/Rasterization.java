@@ -4,8 +4,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.paint.Color;
 
-import java.util.Arrays;
-
 public class Rasterization {
 
     public static void fillTriangle(
@@ -29,10 +27,16 @@ public class Rasterization {
                     (y - arrY[2]) * (arrX[0] - arrX[2]) / (arrY[0] - arrY[2]) + arrX[2];
             final int Ax = Math.min(x1, x2);
             final int Bx = Math.max(x1, x2);
+            if (y < 0){
+                break;
+            }
             for (int x = Ax; x <= Bx; x++) {
+                if (x < 0){
+                    break;
+                }
                 double[] barizenticCoordinate = barizentricCalculator(x, y, arrX, arrY);
                 double z = arrZ[0]*barizenticCoordinate[0] + arrZ[1]*barizenticCoordinate[1] + arrZ[2]*barizenticCoordinate[2];
-                if (z < zBuffer[x][y]) {
+                if (z <= zBuffer[x][y]) {
                     zBuffer[x][y] = z;
                     if ((barizenticCoordinate[0] < 0.02 || barizenticCoordinate[1] < 0.02 || barizenticCoordinate[2] < 0.02) & polyGrid){
                         pixelWriter.setColor(x, y, Color.BLACK);
@@ -48,10 +52,16 @@ public class Rasterization {
                     (y - arrY[2]) * (arrX[0] - arrX[2]) / (arrY[0] - arrY[2]) + arrX[2];
             final int Ax = Math.min(x1, x2);
             final int Bx = Math.max(x1, x2);
+            if (y < 0){
+                break;
+            }
             for (int x = Ax; x <= Bx; x++) {
+                if (x < 0){
+                    break;
+                }
                 double[] barizenticCoordinate = barizentricCalculator(x, y, arrX, arrY);
                 double z = arrZ[0]*barizenticCoordinate[0] + arrZ[1]*barizenticCoordinate[1] + arrZ[2]*barizenticCoordinate[2];
-                if (z < zBuffer[x][y]) {
+                if (z <= zBuffer[x][y]) {
                     zBuffer[x][y] = z;
                     if ((barizenticCoordinate[0] < 0.02 || barizenticCoordinate[1] < 0.02 || barizenticCoordinate[2] < 0.02) & polyGrid){
                         pixelWriter.setColor(x, y, Color.BLACK);

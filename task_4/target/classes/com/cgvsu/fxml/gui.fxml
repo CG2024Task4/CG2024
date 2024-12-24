@@ -73,11 +73,11 @@
             </MenuItem>
         </Menu>
         <Menu mnemonicParsing="false" text="Render Properties">
-            <CheckMenuItem mnemonicParsing="false" onAction="#switchPolygonalGrid" text="Триангуляция" />
-            <CheckMenuItem mnemonicParsing="false" onAction="#setRenderStyleToColorFill" text="Полигональная сетка"/>
+            <CheckMenuItem mnemonicParsing="false" onAction="#triangulation" text="Триангуляция" />
+            <CheckMenuItem mnemonicParsing="false" onAction="#switchPolygonalGrid" text="Полигональная сетка"/>
             <CheckMenuItem mnemonicParsing="false" onAction="#setRenderStyleToColorFill" text="Заполнение цветом" selected="true"/>
-            <CheckMenuItem mnemonicParsing="false" onAction="#setRenderStyleToColorFill" text="Освещение"/>
-            <CheckMenuItem mnemonicParsing="false" onAction="#setRenderStyleToColorFill" text="Текстура"/>
+            <CheckMenuItem mnemonicParsing="false" onAction="#lightning" text="Освещение"/>
+            <CheckMenuItem mnemonicParsing="false" onAction="#texture" text="Текстура"/>
         </Menu>
     </MenuBar>
 

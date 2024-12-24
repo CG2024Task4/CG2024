@@ -1,4 +1,4 @@
-package com.cgvsu.render_engine;
+package com.cgvsu.math;
 
 
 import com.cgvsu.math.typesMatrix.Matrix4f;
@@ -185,5 +185,9 @@ public class ATTransformator {
 
     public void clean() {
         this.transformationMatrix = new Matrix4f(true);
+    }
+
+    public Matrix4f getTransformationMatrix() {
+        return transformationMatrix;
     }
 }

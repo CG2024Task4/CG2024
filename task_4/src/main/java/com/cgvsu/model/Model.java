@@ -30,6 +30,17 @@ public class Model {
         return polygons;
     }
 
+    public Vector3f getCenter() {
+        if (vertices.isEmpty()) {
+            return new Vector3f(0, 0, 0);
+        }
+        Vector3f sum = new Vector3f(0, 0, 0);
+        for (Vector3f vertex : vertices) {
+            sum = sum.added(vertex);
+        }
+        return sum.divided(vertices.size());
+    }
+
     // Метод для триангуляции всех полигонов модели
     public void triangulate() {
         ArrayList<Polygon> triangulatedPolygons = new ArrayList<>(); // Новый список для хранения триангулированных полигонов
@@ -39,7 +50,7 @@ public class Model {
             List<Integer> textureVertexIndices = polygon.getTextureVertexIndices(); // Получаем индексы текстурных координат
             List<Integer> normalIndices = polygon.getNormalIndices(); // Получаем индексы нормалей
 
-            if (vertexIndices.size() <= 3) { // Если полигон уже треугольник, добавляем его без изменений
+            if (vertexIndices.size() == 3) { // Если полигон уже треугольник, добавляем его без изменений
                 triangulatedPolygons.add(polygon);
             } else {
                 // Выполняем триангуляцию с помощью "веерного" метода

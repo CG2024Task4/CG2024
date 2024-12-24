@@ -16,6 +16,9 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
@@ -27,6 +30,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -34,6 +38,12 @@ public class GuiController {
     private static double[][] zBuffer;
 
     final private float TRANSLATION = 0.5F;
+
+    //Поля для управления мышкой
+
+    private double startX;
+    private double startY;
+
     private Timeline timeline;
 
     @FXML
@@ -71,16 +81,16 @@ public class GuiController {
         KeyFrame frame = new KeyFrame(Duration.millis(15), event -> {
             double width = canvas.getWidth();
             double height = canvas.getHeight();
-
             zBuffer = new double[(int) width][(int) height];
-            for (int i = 0; i < zBuffer.length; i++) {
-                for (int j = 0; j < zBuffer[i].length; j++) {
-                    zBuffer[i][j] = Double.POSITIVE_INFINITY;
-                }
+            for (double[] doubles : zBuffer) {
+                Arrays.fill(doubles, Double.POSITIVE_INFINITY);
             }
 
             canvas.getGraphicsContext2D().clearRect(0, 0, width, height);
             camera.setAspectRatio((float) (width / height));
+            canvas.setOnMousePressed(this::handleMousePressed);
+            canvas.setOnMouseDragged(this::handleMouseDragged);
+            canvas.setOnScroll(this::mouseCameraZoom);
 
             if (modelManager != null) {
                 for (Model model: modelManager.getModels()) {
@@ -210,40 +220,6 @@ public class GuiController {
         return result.equals("true");
     }
 
-
-
-
-
-    @FXML
-    public void handleCameraForward(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(0, 0, -TRANSLATION));
-    }
-
-    @FXML
-    public void handleCameraBackward(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(0, 0, TRANSLATION));
-    }
-
-    @FXML
-    public void handleCameraLeft(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(-TRANSLATION, 0, 0));
-    }
-
-    @FXML
-    public void handleCameraRight(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(TRANSLATION, 0, 0));
-    }
-
-    @FXML
-    public void handleCameraUp(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(0, TRANSLATION, 0));
-    }
-
-    @FXML
-    public void handleCameraDown(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(0, -TRANSLATION, 0));
-    }
-
     public void setRenderStyleToColorFill(ActionEvent actionEvent) {
         coloring = !coloring;
     }
@@ -253,6 +229,10 @@ public class GuiController {
     }
     @FXML
     public void onModelSelectionChanged(ActionEvent actionEvent) {
+//        ATTransformator.ATBuilder builder = new ATTransformator.ATBuilder();
+//        ATTransformator transformator = builder.translateByCoordinates(0, 0, 0).build();
+//        Matrix4f matrix = transformator.getTransformationMatrix();
+//        modelManager.getActiveModel() =
     }
 
 
@@ -305,5 +285,37 @@ public class GuiController {
     }
 
     public void texture(ActionEvent actionEvent) {
+    }
+
+    @FXML
+    public void mouseCameraZoom(ScrollEvent scrollEvent) {
+        camera.mouseCameraZoom(scrollEvent.getDeltaY());
+    }
+
+    private void handleMousePressed(MouseEvent mouseEvent) {
+        startX = mouseEvent.getX();
+        startY = mouseEvent.getY();
+    }
+
+    @FXML
+    public void mouseCameraOrbit(MouseEvent mouseEvent) {
+        camera.mouseOrbit(startX - mouseEvent.getX(), startY - mouseEvent.getY());
+        startX = mouseEvent.getX();
+        startY = mouseEvent.getY();
+    }
+
+    @FXML
+    public void mouseCameraMove(MouseEvent mouseEvent) {
+        camera.mousePan(startX - mouseEvent.getX(), startY - mouseEvent.getY());
+        startX = mouseEvent.getX();
+        startY = mouseEvent.getY();
+    }
+
+    private void handleMouseDragged(MouseEvent mouseEvent) {
+        if (mouseEvent.getButton() == MouseButton.PRIMARY) { // Правая кнопка
+            mouseCameraOrbit(mouseEvent);
+        } else if (mouseEvent.getButton() == MouseButton.MIDDLE) { // Средняя кнопка
+            mouseCameraMove(mouseEvent);
+        }
     }
 }

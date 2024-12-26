@@ -56,7 +56,7 @@
 
 
     <Canvas fx:id="canvas" height="870" onScroll="#mouseCameraZoom" width="1600" AnchorPane.topAnchor="30.0" />
-   <TabPane fx:id="settingsTab" prefWidth="240.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="1260.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+    <TabPane fx:id="settingsTab" prefWidth="325.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
      <tabs>
        <Tab text="Модели">
          <content>
@@ -64,9 +64,9 @@
                   <children>
                      <Button layoutX="144.0" layoutY="826.0" mnemonicParsing="false" text="Сохранить" />
                      <Button layoutX="29.0" layoutY="826.0" mnemonicParsing="false" text="Удалить" />
-                     <ScrollPane layoutX="31.0" layoutY="31.0" prefHeight="315.0" prefWidth="288.0">
+                     <ScrollPane layoutX="19.0" layoutY="26.0" prefHeight="315.0" prefWidth="288.0">
                        <content>
-                         <AnchorPane fx:id="modelPane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="285.0" />
+                         <AnchorPane fx:id="modelPane" minHeight="0.0" minWidth="0.0" prefHeight="1000.0" prefWidth="285.0" />
                        </content>
                      </ScrollPane>
                      <TextField layoutX="50.0" layoutY="401.0" prefHeight="25.0" prefWidth="54.0" />

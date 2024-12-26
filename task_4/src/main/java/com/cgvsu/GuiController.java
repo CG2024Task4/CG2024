@@ -319,7 +319,7 @@ public class GuiController {
     }
     public void addNewCamera(ActionEvent actionEvent, Vector3f cameraPos, Vector3f targetPos){
         camerasList.add(new Camera(cameraPos, targetPos, 1.0F, 1, 0.01F, 100));
-        curCamera = camerasList.getLast();
+        curCamera = camerasList.get(camerasList.size() - 1);
 
     }
     public void deleteCamera(ActionEvent actionEvent, int index){

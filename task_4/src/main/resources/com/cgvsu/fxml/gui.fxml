@@ -66,9 +66,31 @@
                      <Button layoutX="29.0" layoutY="826.0" mnemonicParsing="false" text="Удалить" />
                      <ScrollPane layoutX="31.0" layoutY="31.0" prefHeight="315.0" prefWidth="288.0">
                        <content>
-                         <AnchorPane fx:id="modelPane" minHeight="0.0" minWidth="0.0" prefHeight="916.0" prefWidth="285.0" />
+                         <AnchorPane fx:id="modelPane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="285.0" />
                        </content>
                      </ScrollPane>
+                     <TextField layoutX="50.0" layoutY="401.0" prefHeight="25.0" prefWidth="54.0" />
+                     <Text fill="WHITE" layoutX="37.0" layoutY="389.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Перемещение" />
+                     <Text fill="WHITE" layoutX="157.0" layoutY="389.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Поворот" />
+                     <Text fill="WHITE" layoutX="256.0" layoutY="389.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Масштаб" />
+                     <TextField layoutX="154.0" layoutY="401.0" prefHeight="25.0" prefWidth="54.0" />
+                     <TextField layoutX="254.0" layoutY="401.0" prefHeight="25.0" prefWidth="54.0" />
+                     <TextField layoutX="50.0" layoutY="436.0" prefHeight="25.0" prefWidth="54.0" />
+                     <TextField layoutX="154.0" layoutY="436.0" prefHeight="25.0" prefWidth="54.0" />
+                     <TextField layoutX="254.0" layoutY="436.0" prefHeight="25.0" prefWidth="54.0" />
+                     <TextField layoutX="50.0" layoutY="471.0" prefHeight="25.0" prefWidth="54.0" />
+                     <TextField layoutX="154.0" layoutY="471.0" prefHeight="25.0" prefWidth="54.0" />
+                     <TextField layoutX="254.0" layoutY="471.0" prefHeight="25.0" prefWidth="54.0" />
+                     <Text fill="WHITE" layoutX="32.0" layoutY="418.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X:" />
+                     <Text fill="WHITE" layoutX="32.0" layoutY="453.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Y:" />
+                     <Text fill="WHITE" layoutX="32.0" layoutY="487.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Z:" />
+                     <Text fill="WHITE" layoutX="137.0" layoutY="418.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X:" />
+                     <Text fill="WHITE" layoutX="137.0" layoutY="453.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Y:" />
+                     <Text fill="WHITE" layoutX="137.0" layoutY="488.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Z:" />
+                     <Text fill="WHITE" layoutX="236.0" layoutY="417.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X:" />
+                     <Text fill="WHITE" layoutX="236.0" layoutY="452.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Y:" />
+                     <Text fill="WHITE" layoutX="236.0" layoutY="487.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Z:" />
+                     <Button layoutX="51.0" layoutY="524.0" mnemonicParsing="false" text="Выполнить преобразования" />
                   </children>
                </AnchorPane>
          </content>

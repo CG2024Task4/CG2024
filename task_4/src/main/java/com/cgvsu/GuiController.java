@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.cgvsu.math.typesVectors.Vector3f;
+
 
 public class GuiController {
     private static double[][] zBuffer;
@@ -87,11 +89,11 @@ public class GuiController {
     private List<Button> deletedButtonsCamera = new ArrayList<>();
 
 
-
-    private Camera camera = new Camera(
+    private List<Camera> camerasList = List.of(new Camera(
             new Vector3f(0, 0, 100),
             new Vector3f(0, 0, 0),
-            1.0F, 1, 0.01F, 100);
+            1.0F, 1, 0.01F, 100));
+    private Camera curCamera = camerasList.get(0);
 
 
     @FXML
@@ -111,7 +113,7 @@ public class GuiController {
             }
 
             canvas.getGraphicsContext2D().clearRect(0, 0, width, height);
-            camera.setAspectRatio((float) (width / height));
+            curCamera.setAspectRatio((float) (width / height));
             canvas.setOnMousePressed(this::handleMousePressed);
             canvas.setOnMouseDragged(this::handleMouseDragged);
             canvas.setOnScroll(this::mouseCameraZoom);
@@ -119,7 +121,7 @@ public class GuiController {
             if (modelManager != null) {
                 for (Model model: modelManager.getModels()) {
                     canvas.getGraphicsContext2D().setStroke(Color.WHITE);
-                    RenderEngine.render(canvas.getGraphicsContext2D(), camera, model, (int) width, (int) height,
+                    RenderEngine.render(canvas.getGraphicsContext2D(), curCamera, model, (int) width, (int) height,
                             zBuffer, polyGrid, coloring);
                 }
             }
@@ -315,10 +317,39 @@ public class GuiController {
 
     public void texture(ActionEvent actionEvent) {
     }
+    public void addNewCamera(ActionEvent actionEvent, Vector3f cameraPos, Vector3f targetPos){
+        camerasList.add(new Camera(cameraPos, targetPos, 1.0F, 1, 0.01F, 100));
+        curCamera = camerasList.getLast();
+
+    }
+    public void deleteCamera(ActionEvent actionEvent, int index){
+        // Предполагается что индекс у камер будет начинаться с 1
+        index -= 1;
+        if (camerasList.size() == 1){
+            return;
+        }
+        if (curCamera == camerasList.get(index)){
+            // Марин это тебе место для обработки ошибок
+            curCamera = camerasList.get(index - 1);
+        }
+        camerasList.remove(index);
+        addedButtonsCamera.remove(index);
+        deletedButtonsCamera.remove(index);
+        index = 1;
+        for (Button button: addedButtonsCamera){
+            button.setText("Камера " + index);
+            index++;
+        }
+    }
+
+    public void setCurCamera(ActionEvent actionEvent, int index){
+        index -= 1;
+        curCamera = camerasList.get(index);
+    }
 
     @FXML
     public void mouseCameraZoom(ScrollEvent scrollEvent) {
-        camera.mouseCameraZoom(scrollEvent.getDeltaY());
+        curCamera.mouseCameraZoom(scrollEvent.getDeltaY());
     }
 
     private void handleMousePressed(MouseEvent mouseEvent) {
@@ -328,14 +359,14 @@ public class GuiController {
 
     @FXML
     public void mouseCameraOrbit(MouseEvent mouseEvent) {
-        camera.mouseOrbit(startX - mouseEvent.getX(), startY - mouseEvent.getY());
+        curCamera.mouseOrbit(startX - mouseEvent.getX(), startY - mouseEvent.getY());
         startX = mouseEvent.getX();
         startY = mouseEvent.getY();
     }
 
     @FXML
     public void mouseCameraMove(MouseEvent mouseEvent) {
-        camera.mousePan(startX - mouseEvent.getX(), startY - mouseEvent.getY());
+        curCamera.mousePan(startX - mouseEvent.getX(), startY - mouseEvent.getY());
         startX = mouseEvent.getX();
         startY = mouseEvent.getY();
     }

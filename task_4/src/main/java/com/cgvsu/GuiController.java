@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -104,12 +105,9 @@ public class GuiController {
         KeyFrame frame = new KeyFrame(Duration.millis(15), event -> {
             double width = canvas.getWidth();
             double height = canvas.getHeight();
-
             zBuffer = new double[(int) width][(int) height];
-            for (int i = 0; i < zBuffer.length; i++) {
-                for (int j = 0; j < zBuffer[i].length; j++) {
-                    zBuffer[i][j] = Double.POSITIVE_INFINITY;
-                }
+            for (double[] doubles : zBuffer) {
+                Arrays.fill(doubles, Double.POSITIVE_INFINITY);
             }
 
             canvas.getGraphicsContext2D().clearRect(0, 0, width, height);

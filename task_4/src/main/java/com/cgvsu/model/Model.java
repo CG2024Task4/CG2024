@@ -98,7 +98,7 @@ public class Model {
             List<Integer> textureVertexIndices = polygon.getTextureVertexIndices(); // Получаем индексы текстурных координат
             List<Integer> normalIndices = polygon.getNormalIndices(); // Получаем индексы нормалей
 
-            if (vertexIndices.size() <= 3) { // Если полигон уже треугольник, добавляем его без изменений
+            if (vertexIndices.size() == 3) { // Если полигон уже треугольник, добавляем его без изменений
                 triangulatedPolygons.add(polygon);
             } else {
                 // Выполняем триангуляцию с помощью "веерного" метода

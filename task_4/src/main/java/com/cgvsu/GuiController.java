@@ -3,10 +3,9 @@ package com.cgvsu;
 import com.cgvsu.SetModels.ModelManager;
 import com.cgvsu.deletevertex.DeleteVertex;
 import com.cgvsu.math.typesVectors.Vector3f;
-import com.cgvsu.model.FindNormals;
 import com.cgvsu.model.Model;
 import com.cgvsu.objreader.ObjReader;
-import com.cgvsu.objwriter.ObjWriterClass;
+import com.cgvsu.objreader.ObjWriter;
 import com.cgvsu.render_engine.Camera;
 import com.cgvsu.render_engine.RenderEngine;
 import javafx.animation.Animation;
@@ -51,6 +50,12 @@ public class GuiController {
     @FXML
     private Canvas canvas;
 
+    @FXML
+    private TabPane settingsTab;
+
+    @FXML
+    private Button showSettingsButton;
+
     private Model oldModel = null;
 
     private Model triangulatedModel = null;
@@ -62,6 +67,25 @@ public class GuiController {
     private boolean polyGrid = false;
 
     private boolean coloring = true;
+
+
+    //кнопки моделей
+    public AnchorPane modelPane;
+    private List<Button> addedButtonsModel = new ArrayList<>();
+    private List<CheckBox> checkBoxesTexture = new ArrayList<>();
+    private List<CheckBox> checkBoxesLighting = new ArrayList<>();
+    private List<CheckBox> checkBoxesGrid = new ArrayList<>();
+    private List<RadioButton> choiceModelRadioButtons = new ArrayList<>();
+    private List<CheckBox> checkBoxesTriangulation = new ArrayList<>();
+    //кнопки удаления моделей
+    private List<Button> deletedButtonsModel = new ArrayList<>();
+
+    //кнопочки для камеры
+    public AnchorPane cameraPane;
+    private List<Button> addedButtonsCamera = new ArrayList<>();
+    private List<Button> deletedButtonsCamera = new ArrayList<>();
+
+
 
     private Camera camera = new Camera(
             new Vector3f(0, 0, 100),
@@ -112,6 +136,7 @@ public class GuiController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Model (*.obj)", "*.obj"));
         fileChooser.setTitle("Load Model");
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
 
         File file = fileChooser.showOpenDialog((Stage) canvas.getScene().getWindow());
         if (file == null) {
@@ -128,6 +153,7 @@ public class GuiController {
             triangulatedModel.triangulate();
             modelManager.addModel(oldModel);
             modelManager.setActiveModel(oldModel);
+            addModelButtons();
         } catch (IOException exception) {
             showError("Ошибка чтения файла", "Не удалось прочитать файл"+ exception.getMessage());
         } /*catch (InvalidFileFormatException exception) {
@@ -142,16 +168,19 @@ public class GuiController {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Объектные файлы", "*.obj"));
         File file = fileChooser.showSaveDialog(null);
 
-        if (file != null) {
-            String filename = file.getAbsolutePath();
-            // Создаем экземпляр ObjWriterClass для записи модели
-            ObjWriterClass objWriter = new ObjWriterClass();
-            objWriter.write(modelManager.getActiveModel(), filename);  // Сохраняем модель
+        if (modelManager.getActiveModel()!=null) {
+            if (file != null) {
+                String filename = file.getAbsolutePath();
+                // Создаем экземпляр ObjWriterClass для записи модели
+                ObjWriter.write(modelManager.getActiveModel(), filename);  // Сохраняем модель
 
-            System.out.println("Модель сохранена в файл: " + filename);
+                System.out.println("Модель сохранена в файл: " + filename);
+            } else {
+                showError("Ошибка сохранения", "Введите имя");
+            }
         }
         else {
-            showError("Ошибка сохранения","Нет модели");
+            showError("Ошибка сохранения", "Нет модели");
         }
     }
     // Метод для отображения сообщения об ошибке
@@ -320,4 +349,96 @@ public class GuiController {
             mouseCameraMove(mouseEvent);
         }
     }
+
+    public void toggleSettings(ActionEvent actionEvent) {
+        settingsTab.setVisible(!settingsTab.isVisible());
+        String arrow = (settingsTab.isVisible()) ? ">" : "<";
+        showSettingsButton.setText(arrow);
+        showSettingsButton.setTranslateX(325 - showSettingsButton.getTranslateX());
+    }
+
+
+    public void addModelButtons() {
+        Button addButton = new Button("Модель " + (addedButtonsModel.size() + 1));
+        addButton.setLayoutY((addedButtonsModel.size() > 0) ?
+               checkBoxesTriangulation.get(checkBoxesTriangulation.size()-1).getLayoutY() + 50 :
+                20);
+        addButton.setLayoutX(20);
+        addedButtonsModel.add(addButton);
+
+        Button deleteButton = new Button("Удалить");
+        deleteButton.setLayoutY(addedButtonsModel.get(addedButtonsModel.size() - 1).getLayoutY());
+        deleteButton.setLayoutX(addedButtonsModel.get(addedButtonsModel.size() - 1).getLayoutX() + 85);
+        deletedButtonsModel.add(deleteButton);
+
+        RadioButton radioButton = new RadioButton();
+        radioButton.setLayoutY(deletedButtonsModel.get(deletedButtonsModel.size() - 1).getLayoutY() + 4);
+        radioButton.setLayoutX(deletedButtonsModel.get(deletedButtonsModel.size() - 1).getLayoutX() + 75);
+        choiceModelRadioButtons.add(radioButton);
+
+
+
+        //Сетка
+        CheckBox checkBoxGrid = new CheckBox("Сетка");
+        checkBoxGrid.setLayoutY(choiceModelRadioButtons.get(choiceModelRadioButtons.size() - 1).getLayoutY() + 40);
+        checkBoxGrid.setLayoutX(20);
+        checkBoxGrid.getStyleClass().add("checkbox"); // Применение стиля
+        checkBoxesGrid.add(checkBoxGrid);
+
+        //Тексутры
+        CheckBox checkBoxTexture = new CheckBox("Текстура");
+        checkBoxTexture.setLayoutY(checkBoxesGrid.get(checkBoxesGrid.size() - 1).getLayoutY() + 20);
+        checkBoxTexture.setLayoutX(checkBoxesGrid.get(checkBoxesGrid.size() - 1).getLayoutX());
+        checkBoxTexture.getStyleClass().add("checkbox"); // Применение стиля
+        checkBoxesTexture.add(checkBoxTexture);
+
+        // Освещение
+        CheckBox checkBoxLighting = new CheckBox("Освещение");
+        checkBoxLighting.setLayoutY(checkBoxesTexture.get(checkBoxesTexture.size() - 1).getLayoutY() + 20);
+        checkBoxLighting.setLayoutX(checkBoxesTexture.get(checkBoxesTexture.size() - 1).getLayoutX());
+        checkBoxLighting.getStyleClass().add("checkbox"); // Применение стиля
+        checkBoxesLighting.add(checkBoxLighting);
+
+        // Триангуляция
+        CheckBox checkBoxTriangulation = new CheckBox("Триангуляция");
+        checkBoxTriangulation.setLayoutY(checkBoxesTexture.get(checkBoxesLighting.size() - 1).getLayoutY() + 40);
+        checkBoxTriangulation.setLayoutX(checkBoxesTexture.get(checkBoxesLighting.size() - 1).getLayoutX());
+        checkBoxTriangulation.getStyleClass().add("checkbox"); // Применение стиля
+        checkBoxesTriangulation.add(checkBoxTriangulation);
+
+
+        modelPane.getChildren().add(addButton);
+        modelPane.getChildren().add(deleteButton);
+        modelPane.getChildren().add(radioButton);
+        modelPane.getChildren().add(checkBoxGrid);
+        modelPane.getChildren().add(checkBoxTexture);
+        modelPane.getChildren().add(checkBoxLighting);
+        modelPane.getChildren().add(checkBoxTriangulation);
+    }
+
+
+    public void addCameraButtons() {
+        Button addButton = new Button("Камера " + (addedButtonsCamera.size() + 1));
+        addButton.setLayoutY((addedButtonsCamera.size() > 0) ?
+                addedButtonsModel.get(addedButtonsModel.size() - 1).getLayoutY() + 70 :
+                245);
+        addButton.setLayoutX(20);
+        addedButtonsCamera.add(addButton);
+
+        Button deleteButton = new Button("Удалить");
+        deleteButton.setLayoutY(addedButtonsCamera.get(addedButtonsCamera.size() - 1).getLayoutY());
+        deleteButton.setLayoutX(addedButtonsCamera.get(addedButtonsCamera.size() - 1).getLayoutX() + 85);
+        deletedButtonsCamera.add(deleteButton);
+
+
+
+        cameraPane.getChildren().add(addButton);
+        cameraPane.getChildren().add(deleteButton);
+
+    }
+
+
+
+
+
 }

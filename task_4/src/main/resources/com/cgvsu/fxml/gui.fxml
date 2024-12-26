@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.input.KeyCodeCombination?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.canvas.Canvas?>
-
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckMenuItem?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
-<AnchorPane fx:id="anchorPane" xmlns:fx="http://javafx.com/fxml" fx:controller="com.cgvsu.GuiController" >
+<?import javafx.scene.input.KeyCodeCombination?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane fx:id="anchorPane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cgvsu.GuiController">
     <MenuBar>
         <Menu mnemonicParsing="false" text="File">
             <MenuItem mnemonicParsing="false" onAction="#onOpenModelMenuItemClick" text="Load Model">
             <accelerator>
-                <KeyCodeCombination alt="UP" control="DOWN" meta="UP" shift="UP" shortcut="UP" code="F"/>
+                <KeyCodeCombination alt="UP" code="F" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
             </accelerator>
             </MenuItem>
             <MenuItem mnemonicParsing="false" onAction="#saveModel" text="Save Model">
                 <accelerator>
-                    <KeyCodeCombination alt="UP" control="DOWN" meta="UP" shift="UP" shortcut="UP" code="S"/>
+                    <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                 </accelerator>
             </MenuItem>
         </Menu>
@@ -39,7 +39,7 @@
             <MenuItem mnemonicParsing="false" text="Delete polygon">
             </MenuItem>
         </Menu>
-        <Menu mnemonicParsing="false"  text="Model">
+        <Menu mnemonicParsing="false" text="Model">
             <MenuItem mnemonicParsing="false" onAction="#chooseModel" text="Choose the model">
             </MenuItem>
             <MenuItem mnemonicParsing="false" onAction="#DeleteModel" text="Delete the model">
@@ -47,13 +47,55 @@
         </Menu>
         <Menu mnemonicParsing="false" text="Render Properties">
             <CheckMenuItem mnemonicParsing="false" onAction="#triangulation" text="Триангуляция" />
-            <CheckMenuItem mnemonicParsing="false" onAction="#switchPolygonalGrid" text="Полигональная сетка"/>
-            <CheckMenuItem mnemonicParsing="false" onAction="#setRenderStyleToColorFill" text="Заполнение цветом" selected="true"/>
-            <CheckMenuItem mnemonicParsing="false" onAction="#lightning" text="Освещение"/>
-            <CheckMenuItem mnemonicParsing="false" onAction="#texture" text="Текстура"/>
+            <CheckMenuItem mnemonicParsing="false" onAction="#switchPolygonalGrid" text="Полигональная сетка" />
+            <CheckMenuItem mnemonicParsing="false" onAction="#setRenderStyleToColorFill" selected="true" text="Заполнение цветом" />
+            <CheckMenuItem mnemonicParsing="false" onAction="#lightning" text="Освещение" />
+            <CheckMenuItem mnemonicParsing="false" onAction="#texture" text="Текстура" />
         </Menu>
     </MenuBar>
 
 
     <Canvas fx:id="canvas" height="870" onScroll="#mouseCameraZoom" width="1600" AnchorPane.topAnchor="30.0" />
+   <TabPane fx:id="settingsTab" prefWidth="240.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="1260.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+     <tabs>
+       <Tab text="Модели">
+         <content>
+           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                  <children>
+                     <Button layoutX="144.0" layoutY="826.0" mnemonicParsing="false" text="Сохранить" />
+                     <Button layoutX="29.0" layoutY="826.0" mnemonicParsing="false" text="Удалить" />
+                     <ScrollPane layoutX="31.0" layoutY="31.0" prefHeight="315.0" prefWidth="288.0">
+                       <content>
+                         <AnchorPane fx:id="modelPane" minHeight="0.0" minWidth="0.0" prefHeight="916.0" prefWidth="285.0" />
+                       </content>
+                     </ScrollPane>
+                  </children>
+               </AnchorPane>
+         </content>
+       </Tab>
+       <Tab text="Камеры">
+         <content>
+           <AnchorPane fx:id="cameraPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                  <children>
+                     <Button layoutX="22.0" layoutY="14.0" mnemonicParsing="false" text="Добавить камеру" />
+                     <TextField layoutX="50.0" layoutY="80.0" prefHeight="25.0" prefWidth="93.0" />
+                     <TextField layoutX="204.0" layoutY="80.0" prefHeight="25.0" prefWidth="93.0" />
+                     <TextField layoutX="50.0" layoutY="117.0" prefHeight="25.0" prefWidth="93.0" />
+                     <TextField layoutX="204.0" layoutY="117.0" prefHeight="25.0" prefWidth="93.0" />
+                     <TextField layoutX="50.0" layoutY="155.0" prefHeight="25.0" prefWidth="93.0" />
+                     <TextField layoutX="204.0" layoutY="155.0" prefHeight="25.0" prefWidth="93.0" />
+                     <Text fill="WHITE" layoutX="72.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Позиция" />
+                     <Text fill="WHITE" layoutX="197.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Точка направления" />
+                     <Text fill="WHITE" layoutX="31.0" layoutY="97.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X:" />
+                     <Text fill="WHITE" layoutX="31.0" layoutY="133.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Y:" />
+                     <Text fill="WHITE" layoutX="31.0" layoutY="171.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Z:" />
+                     <Text fill="WHITE" layoutX="181.0" layoutY="97.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X:" />
+                     <Text fill="WHITE" layoutX="181.0" layoutY="134.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Y:" />
+                     <Text fill="WHITE" layoutX="181.0" layoutY="172.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Z:" />
+                  </children></AnchorPane>
+         </content>
+       </Tab>
+     </tabs>
+   </TabPane>
+    <Button fx:id="showSettingsButton" layoutX="1245.0" mnemonicParsing="false" onAction="#toggleSettings" prefHeight="900.0" prefWidth="30.0" style="-fx-shape: &quot;M 0 0 L 0 -1 M 0 -1 L 1 -1 L 1 0 L 0 0&quot;; -fx-background-color: #212121; -fx-border-style: solid; -fx-border-color: #212121;" text="&gt;" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="325.0" AnchorPane.topAnchor="0.0" />
 </AnchorPane>

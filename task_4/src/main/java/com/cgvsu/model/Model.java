@@ -13,6 +13,8 @@ public class Model {
     public ArrayList<Vector2f> textureVertices = new ArrayList<Vector2f>();
     public ArrayList<Vector3f> normals = new ArrayList<Vector3f>();
     public ArrayList<Polygon> polygons = new ArrayList<Polygon>();
+    public double xSize = 0;
+    private List<Group> groups = new ArrayList<>();
 
     public ArrayList<Vector3f> getVertices() {
         return vertices;
@@ -29,6 +31,52 @@ public class Model {
     public ArrayList<Polygon> getPolygons() {
         return polygons;
     }
+
+    public void addGroup(Group group) {
+        groups.add(group);
+    }
+
+    public void addVertex(Vector3f vertex) {
+        vertices.add(vertex);
+    }
+
+    public void addTextureVertex(Vector2f textureVertex) {
+        textureVertices.add(textureVertex);
+    }
+
+    public void addNormal(Vector3f normal) {
+        normals.add(normal);
+    }
+
+    public void addPolygon(Polygon polygon) {
+        polygons.add(polygon);
+    }
+    public Polygon getFirstPolygon() {
+        return polygons.get(0);
+    }
+
+
+    public int getVerticesSize() {
+        return vertices.size();
+    }
+
+    public int getTextureVerticesSize() {
+        return textureVertices.size();
+    }
+
+    public int getNormalsSize() {
+        return normals.size();
+    }
+
+    public int getPolygonsSize() {
+        return polygons.size();
+    }
+
+    public List<Group> getGroups() {
+        return groups;
+    }
+
+
 
     public Vector3f getCenter() {
         if (vertices.isEmpty()) {

@@ -2,155 +2,271 @@ package com.cgvsu.objreader;
 
 import com.cgvsu.math.typesVectors.Vector2f;
 import com.cgvsu.math.typesVectors.Vector3f;
+import com.cgvsu.model.Group;
 import com.cgvsu.model.Model;
 import com.cgvsu.model.Polygon;
+import com.cgvsu.objreader.exceptions.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.ParseException;
+import java.util.*;
 
 public class ObjReader {
-
 	private static final String OBJ_VERTEX_TOKEN = "v";
 	private static final String OBJ_TEXTURE_TOKEN = "vt";
 	private static final String OBJ_NORMAL_TOKEN = "vn";
 	private static final String OBJ_FACE_TOKEN = "f";
+	private static final String OBJ_GROUP_TOKEN = "g";
+	private static final String COMMENT_TOKEN = "#";
 
-	public static Model read(String fileContent) {
-		Model result = new Model();
+	private int lineIndex = 0;
+	private final Model model = new Model();
+	private Group currentGroup = null;
 
-		int lineInd = 0;
-		Scanner scanner = new Scanner(fileContent);
+	private final DecimalFormat format = new DecimalFormat("0.#");
+	private Character decimalSeparator = null;
+
+	protected boolean isSoft = true;
+
+	protected ObjReader() {}
+
+	public static Model read(File file) {
+		return read(file, true);
+	}
+
+	public static Model read(File file, boolean isSoft) {
+		String content;
+		try {
+			content = Files.readString(Path.of(file.getCanonicalPath()));
+		} catch (IOException exception) {
+			throw new RuntimeException(exception);
+		}
+
+		return read(content, isSoft);
+	}
+
+	public static Model read(String content) {
+		return read(content, true);
+	}
+
+	public static Model read(String content, boolean isSoft) {
+		ObjReader objReader = new ObjReader();
+		objReader.isSoft = isSoft;
+		objReader.readModel(content);
+		return objReader.model;
+	}
+
+	protected void readModel(String content) {
+		Scanner scanner = new Scanner(content);
+		double xMax = Float.MIN_VALUE;
+		double xMin = Float.MAX_VALUE;
+		scanner.useLocale(Locale.ROOT);
 		while (scanner.hasNextLine()) {
-			final String line = scanner.nextLine();
-			ArrayList<String> wordsInLine = new ArrayList<String>(Arrays.asList(line.split("\\s+")));
-			if (wordsInLine.isEmpty()) {
+			lineIndex++;
+			String line = handleLine(scanner.nextLine());
+
+			if (line.isBlank()) {
 				continue;
 			}
 
-			final String token = wordsInLine.get(0);
-			wordsInLine.remove(0);
+			String[] wordsInLine = line.split("\\s+");
+			final String token = wordsInLine[0];
+			String[] wordsInLineWithoutToken =  Arrays.copyOfRange(wordsInLine, 1, wordsInLine.length);
 
-			++lineInd;
 			switch (token) {
-				// Для структур типа вершин методы написаны так, чтобы ничего не знать о внешней среде.
-				// Они принимают только то, что им нужно для работы, а возвращают только то, что могут создать.
-				// Исключение - индекс строки. Он прокидывается, чтобы выводить сообщение об ошибке.
-				// Могло быть иначе. Например, метод parseVertex мог вместо возвращения вершины принимать вектор вершин
-				// модели или сам класс модели, работать с ним.
-				// Но такой подход может привести к большему количеству ошибок в коде. Например, в нем что-то может
-				// тайно сделаться с классом модели.
-				// А еще это портит читаемость
-				// И не стоит забывать про тесты. Чем проще вам задать данные для теста, проверить, что метод рабочий,
-				// тем лучше.
-				case OBJ_VERTEX_TOKEN -> result.vertices.add(parseVertex(wordsInLine, lineInd));
-				case OBJ_TEXTURE_TOKEN -> result.textureVertices.add(parseTextureVertex(wordsInLine, lineInd));
-				case OBJ_NORMAL_TOKEN -> result.normals.add(parseNormal(wordsInLine, lineInd));
-				case OBJ_FACE_TOKEN -> result.polygons.add(parseFace(wordsInLine, lineInd));
-				default -> {}
-			}
-		}
-
-		return result;
-	}
-
-	// Всем методам кроме основного я поставил модификатор доступа protected, чтобы обращаться к ним в тестах
-	protected static Vector3f parseVertex(final ArrayList<String> wordsInLineWithoutToken, int lineInd) {
-		try {
-			return new Vector3f(
-					Float.parseFloat(wordsInLineWithoutToken.get(0)),
-					Float.parseFloat(wordsInLineWithoutToken.get(1)),
-					Float.parseFloat(wordsInLineWithoutToken.get(2)));
-
-		} catch(NumberFormatException e) {
-			throw new ObjReaderException("Failed to parse float value.", lineInd);
-
-		} catch(IndexOutOfBoundsException e) {
-			throw new ObjReaderException("Too few vertex arguments.", lineInd);
-		}
-	}
-
-	protected static Vector2f parseTextureVertex(final ArrayList<String> wordsInLineWithoutToken, int lineInd) {
-		try {
-			return new Vector2f(
-					Float.parseFloat(wordsInLineWithoutToken.get(0)),
-					Float.parseFloat(wordsInLineWithoutToken.get(1)));
-
-		} catch(NumberFormatException e) {
-			throw new ObjReaderException("Failed to parse float value.", lineInd);
-
-		} catch(IndexOutOfBoundsException e) {
-			throw new ObjReaderException("Too few texture vertex arguments.", lineInd);
-		}
-	}
-
-	protected static Vector3f parseNormal(final ArrayList<String> wordsInLineWithoutToken, int lineInd) {
-		try {
-			return new Vector3f(
-					Float.parseFloat(wordsInLineWithoutToken.get(0)),
-					Float.parseFloat(wordsInLineWithoutToken.get(1)),
-					Float.parseFloat(wordsInLineWithoutToken.get(2)));
-
-		} catch(NumberFormatException e) {
-			throw new ObjReaderException("Failed to parse float value.", lineInd);
-
-		} catch(IndexOutOfBoundsException e) {
-			throw new ObjReaderException("Too few normal arguments.", lineInd);
-		}
-	}
-
-	protected static Polygon parseFace(final ArrayList<String> wordsInLineWithoutToken, int lineInd) {
-		ArrayList<Integer> onePolygonVertexIndices = new ArrayList<Integer>();
-		ArrayList<Integer> onePolygonTextureVertexIndices = new ArrayList<Integer>();
-		ArrayList<Integer> onePolygonNormalIndices = new ArrayList<Integer>();
-
-		for (String s : wordsInLineWithoutToken) {
-			parseFaceWord(s, onePolygonVertexIndices, onePolygonTextureVertexIndices, onePolygonNormalIndices, lineInd);
-		}
-
-		Polygon result = new Polygon();
-		result.setVertexIndices(onePolygonVertexIndices);
-		result.setTextureVertexIndices(onePolygonTextureVertexIndices);
-		result.setNormalIndices(onePolygonNormalIndices);
-		return result;
-	}
-
-	// Обратите внимание, что для чтения полигонов я выделил еще один вспомогательный метод.
-	// Это бывает очень полезно и с точки зрения структурирования алгоритма в голове, и с точки зрения тестирования.
-	// В радикальных случаях не бойтесь выносить в отдельные методы и тестировать код из одной-двух строчек.
-	protected static void parseFaceWord(
-			String wordInLine,
-			ArrayList<Integer> onePolygonVertexIndices,
-			ArrayList<Integer> onePolygonTextureVertexIndices,
-			ArrayList<Integer> onePolygonNormalIndices,
-			int lineInd) {
-		try {
-			String[] wordIndices = wordInLine.split("/");
-			switch (wordIndices.length) {
-				case 1 -> {
-					onePolygonVertexIndices.add(Integer.parseInt(wordIndices[0]) - 1);
+				case OBJ_VERTEX_TOKEN ->{
+					Vector3f parsedVector3f = parseVector3f(wordsInLineWithoutToken);
+					model.addVertex(parsedVector3f);
+					xMax = Math.max(parsedVector3f.getX(),xMax);
+					xMin = Math.min(parsedVector3f.getX(),xMin);
+					model.xSize = Math.max(model.xSize,Math.abs(xMin - xMax));
 				}
-				case 2 -> {
-					onePolygonVertexIndices.add(Integer.parseInt(wordIndices[0]) - 1);
-					onePolygonTextureVertexIndices.add(Integer.parseInt(wordIndices[1]) - 1);
-				}
-				case 3 -> {
-					onePolygonVertexIndices.add(Integer.parseInt(wordIndices[0]) - 1);
-					onePolygonNormalIndices.add(Integer.parseInt(wordIndices[2]) - 1);
-					if (!wordIndices[1].equals("")) {
-						onePolygonTextureVertexIndices.add(Integer.parseInt(wordIndices[1]) - 1);
+				case OBJ_TEXTURE_TOKEN -> model.addTextureVertex(parseVector2f(wordsInLineWithoutToken));
+				case OBJ_NORMAL_TOKEN -> model.addNormal(parseVector3f(wordsInLineWithoutToken));
+				case OBJ_FACE_TOKEN -> handleFace(wordsInLineWithoutToken);
+				case OBJ_GROUP_TOKEN -> handleGroup(wordsInLineWithoutToken);
+				default -> {
+					if (!isSoft) {
+						throw new TokenException(lineIndex);
 					}
 				}
-				default -> {
-					throw new ObjReaderException("Invalid element size.", lineInd);
-				}
+			}
+		}
+
+		if (currentGroup != null) {
+			model.addGroup(currentGroup);
+		}
+
+		int verticesSize = model.getVerticesSize();
+		int textureVerticesSize = model.getTextureVerticesSize();
+		int normalsSize = model.getNormalsSize();
+		for (Polygon polygon: model.getPolygons()) {
+			polygon.checkIndices(verticesSize, textureVerticesSize, normalsSize);
+		}
+	}
+
+	private String handleLine(String line) {
+		int commentIndex = line.indexOf(COMMENT_TOKEN);
+		if (commentIndex > -1) {
+			line = line.substring(0, commentIndex);
+		}
+
+		int dotIndex = line.indexOf('.');
+		int commaIndex = line.indexOf(',');
+
+		if (dotIndex > -1 && commaIndex > -1) {
+			throw new RuntimeException("Two different decimal separators used in one file.");
+		}
+
+		if (decimalSeparator != null) {
+			if (dotIndex > -1 && decimalSeparator == ',') {
+				throw new RuntimeException("Two different decimal separators used in one file.");
+			}
+			if (commaIndex > -1 && decimalSeparator == '.') {
+				throw new RuntimeException("Two different decimal separators used in one file.");
 			}
 
-		} catch(NumberFormatException e) {
-			throw new ObjReaderException("Failed to parse int value.", lineInd);
+			return line;
+		}
 
-		} catch(IndexOutOfBoundsException e) {
-			throw new ObjReaderException("Too few arguments.", lineInd);
+		DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+		if (commaIndex > -1) {
+			symbols.setDecimalSeparator(',');
+			decimalSeparator = ',';
+			format.setDecimalFormatSymbols(symbols);
+		}
+		if (dotIndex > -1){
+			symbols.setDecimalSeparator('.');
+			decimalSeparator = '.';
+			format.setDecimalFormatSymbols(symbols);
+		}
+
+		return line;
+	}
+
+	private void handleFace(String[] wordsInLineWithoutToken) {
+		Polygon polygon = parseFace(wordsInLineWithoutToken);
+
+		if (!model.getPolygons().isEmpty()) {
+			Polygon firstPolygon = model.getFirstPolygon();
+//			if (polygon.hasTexture() != firstPolygon.hasTexture()) {
+//				throw new TextureException(lineIndex);
+//			}
+		}
+
+		model.addPolygon(polygon);
+		if (currentGroup != null) {
+			currentGroup.addPolygon(polygon);
+		}
+	}
+
+	private void handleGroup(String[] wordsInLineWithoutToken) {
+		if (wordsInLineWithoutToken.length == 0) {
+			throw new GroupNameException(lineIndex);
+		}
+
+		if (currentGroup != null) {
+			model.addGroup(currentGroup);
+		}
+
+		StringBuilder sb = new StringBuilder();
+		for (String s : wordsInLineWithoutToken) {
+			sb.append(s).append(' ');
+		}
+		sb.deleteCharAt(sb.length() - 1);
+		currentGroup = new Group(sb.toString());
+	}
+
+	protected Vector2f parseVector2f(final String[] wordsInLineWithoutToken) {
+		checkSize(wordsInLineWithoutToken.length, 2);
+		try {
+			return new Vector2f(
+					format.parse(wordsInLineWithoutToken[0]).floatValue(),
+					format.parse(wordsInLineWithoutToken[1]).floatValue());
+
+		} catch (ParseException e) {
+			throw new ParsingException("float", lineIndex);
+		}
+	}
+
+	protected Vector3f parseVector3f(final String[] wordsInLineWithoutToken) {
+		checkSize(wordsInLineWithoutToken.length, 3);
+		try {
+			return new Vector3f(
+					format.parse(wordsInLineWithoutToken[0]).floatValue(),
+					format.parse(wordsInLineWithoutToken[1]).floatValue(),
+					format.parse(wordsInLineWithoutToken[2]).floatValue());
+
+		} catch (ParseException e) {
+			throw new ParsingException("float", lineIndex);
+		}
+	}
+
+	protected Polygon parseFace(final String[] wordsInLineWithoutToken) {
+		List<FaceWord> faceWords = new ArrayList<>();
+		Set<WordType> types = new HashSet<>();
+
+		for (String word : wordsInLineWithoutToken) {
+			FaceWord faceWord = FaceWord.parse(word, lineIndex, isSoft);
+
+			types.add(faceWord.getWordType());
+			faceWords.add(faceWord);
+		}
+
+		if (faceWords.size() < 3) {
+			throw new ArgumentsSizeException(ArgumentsErrorType.FEW_IN_POLYGON, lineIndex);
+		}
+		if (types.size() > 1) {
+			throw new FaceWordTypeException(lineIndex);
+		}
+
+		return createPolygon(faceWords.toArray(new FaceWord[0]));
+	}
+
+	protected Polygon createPolygon(FaceWord[] faceWords) {
+		Polygon polygon = new Polygon();
+		List<Integer> vertexIndices = new ArrayList<>();
+		List<Integer> textureVertexIndices = new ArrayList<>();
+		List<Integer> normalIndices = new ArrayList<>();
+
+        for (FaceWord faceWord : faceWords) {
+            Integer vertexIndex = faceWord.getVertexIndex();
+            if (vertexIndex != null) {
+                vertexIndices.add(vertexIndex);
+            }
+            Integer textureVertexIndex = faceWord.getTextureVertexIndex();
+            if (textureVertexIndex != null) {
+                textureVertexIndices.add(textureVertexIndex);
+            }
+            Integer normalIndex = faceWord.getNormalIndex();
+            if (normalIndex != null) {
+                normalIndices.add(normalIndex);
+            }
+        }
+
+		polygon.setVertexIndices(vertexIndices);
+		polygon.setTextureVertexIndices(textureVertexIndices);
+		polygon.setNormalIndices(normalIndices);
+		polygon.setLineIndex(lineIndex);
+
+		return polygon;
+	}
+
+	private void checkSize(int wordCount, int vectorSize) {
+		if (wordCount == vectorSize) {
+			return;
+		}
+		if (wordCount < vectorSize) {
+			throw new ArgumentsSizeException(ArgumentsErrorType.FEW, lineIndex);
+		}
+
+		if (!isSoft) {
+			throw new ArgumentsSizeException(ArgumentsErrorType.MANY, lineIndex);
 		}
 	}
 }

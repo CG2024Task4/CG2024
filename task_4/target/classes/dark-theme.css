@@ -68,13 +68,7 @@
 }
 
 
-VBox {
-    -fx-background-color: #262626; /* Темный фон */
-    -fx-padding: 10;
-    -fx-border-color: #1f1f1f; /* Граница */
-    -fx-border-width: 2;
-    -fx-border-radius: 5;
-}
+
 
 Button {
     -fx-background-color: #5E81AC;
@@ -86,7 +80,31 @@ TextField {
     -fx-background-color: #ECEFF4;
 }
 
+/* Стили для TabPane */
+.tab-pane {
+    -fx-background-color: #2b2b2b; /* Темный фон */
+    -fx-border-width: 0px;
+}
 
+/* Стили для Tab */
+.tab {
+    -fx-background-color: #575757; /* Цвет невыбранных вкладок */
+}
+
+.tab:selected {
+    -fx-background-color: #454545; /* Цвет выбранной вкладки */
+
+}
+/* Стили для кнопок вкладок */
+.tab-label {
+    -fx-text-fill: #ffffff; /* Белый текст вкладок */
+}
+.tab:hover {
+ -fx-background-color: #2e2e2e; /* Установить цвет фона для вкладки при наведении */
+}
+.checkbox {
+    -fx-text-fill: black; /* Замените 'red' на нужный вам цвет */
+}
 
 
 

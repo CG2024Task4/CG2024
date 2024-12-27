@@ -103,9 +103,40 @@ TextField {
  -fx-background-color: #2e2e2e; /* Установить цвет фона для вкладки при наведении */
 }
 .checkbox {
-    -fx-text-fill: black; /* Замените 'red' на нужный вам цвет */
+    -fx-text-fill: white; /* Замените 'red' на нужный вам цвет */
 }
 
 
+.scroll-pane {
+    -fx-background: #2b2b2b; /* Фон ScrollPane */
+    -fx-border-color: #454545; /* Цвет границ */
+}
+/* Пример: настройка вертикальной полосы прокрутки */
+.scroll-pane .scroll-bar:vertical {
+ -fx-background-color: #3b3b3b; /* Цвет фона */
+ -fx-background-insets: 0; /* Удалить вставки по умолчанию */
+}
+
+/* Пример: настройка горизонтальной полосы прокрутки */
+.scroll-pane .scroll-bar:horizontal {
+ -fx-background-color: #3b3b3b;
+ -fx-background-insets: 0;
+}
+/* Пример: изменение размера и цвета индикатора вертикальной прокрутки */
+.scroll-pane .scroll-bar:vertical .thumb {
+ -fx-background-color: #666666; /* Цвет индикатора */
+ -fx-min-width: 3px; /* Минимальная ширина */
+}
+
+/* Пример: изменение размера и цвета индикатора горизонтальной прокрутки */
+.scroll-pane .scroll-bar:horizontal .thumb {
+ -fx-background-color: #666666; /* Цвет индикатора */
+  -fx-min-width: 3px; /* Минимальная высота */
+}
+
+
+.scroll-pane .corner {
+    -fx-background-color: #666666; /* Цвет совпадает с фоном */
+}
 
 

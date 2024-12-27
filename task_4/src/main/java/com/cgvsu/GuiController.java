@@ -40,6 +40,7 @@ public class GuiController {
 
     final private float TRANSLATION = 0.5F;
 
+
     //Поля для управления мышкой
 
     private double startX;
@@ -87,6 +88,19 @@ public class GuiController {
     public AnchorPane cameraPane;
     private List<Button> addedButtonsCamera = new ArrayList<>();
     private List<Button> deletedButtonsCamera = new ArrayList<>();
+
+
+    //Для перемещения изменения масштаба и тд модели
+    public TextField Sx;
+    public TextField Sy;
+    public TextField Sz;
+    public TextField Tx;
+    public TextField Ty;
+    public TextField Tz;
+    public TextField Rx;
+    public TextField Ry;
+    public TextField Rz;
+    public Button convert;
 
 
     private List<Camera> camerasList = List.of(new Camera(
@@ -466,8 +480,32 @@ public class GuiController {
 
     }
 
+    //кнопочка добавит камеру тут добавляется камера
+    public void createCamera(MouseEvent mouseEvent) {
 
+    }
+    //кнопочка преобразовать тут её функция при нажатии
+    public void convert(MouseEvent mouseEvent) {
+    }
 
+    //быстрые кнопочки для наташи
 
+    //кнопочка перенести в начало координат
+    public void MoveToTheOrigin(ActionEvent actionEvent) {
+    }
 
+    public void Rotate90x(ActionEvent actionEvent) {
+    }
+
+    public void Rotate90y(ActionEvent actionEvent) {
+    }
+
+    public void Rotate90z(ActionEvent actionEvent) {
+    }
+    //Увеличить в 2 раза
+    public void increase2(ActionEvent actionEvent) {
+    }
+    //Уменьшить в 2 раза
+    public void reduce2(ActionEvent actionEvent) {
+    }
 }

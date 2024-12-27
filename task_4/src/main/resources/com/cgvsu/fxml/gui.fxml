@@ -62,25 +62,25 @@
          <content>
            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                   <children>
-                     <Button layoutX="144.0" layoutY="826.0" mnemonicParsing="false" text="Сохранить" />
-                     <Button layoutX="29.0" layoutY="826.0" mnemonicParsing="false" text="Удалить" />
+                     <Button layoutX="204.0" layoutY="779.0" mnemonicParsing="false" text="Сохранить" />
+                     <Button layoutX="56.0" layoutY="779.0" mnemonicParsing="false" text="Удалить" />
                      <ScrollPane layoutX="19.0" layoutY="26.0" prefHeight="315.0" prefWidth="288.0">
                        <content>
                          <AnchorPane fx:id="modelPane" minHeight="0.0" minWidth="0.0" prefHeight="1000.0" prefWidth="285.0" />
                        </content>
                      </ScrollPane>
-                     <TextField layoutX="50.0" layoutY="401.0" prefHeight="25.0" prefWidth="54.0" />
+                     <TextField fx:id="Sx" layoutX="50.0" layoutY="401.0" prefHeight="25.0" prefWidth="54.0" text="0" />
                      <Text fill="WHITE" layoutX="37.0" layoutY="389.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Перемещение" />
                      <Text fill="WHITE" layoutX="157.0" layoutY="389.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Поворот" />
                      <Text fill="WHITE" layoutX="256.0" layoutY="389.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Масштаб" />
-                     <TextField layoutX="154.0" layoutY="401.0" prefHeight="25.0" prefWidth="54.0" />
-                     <TextField layoutX="254.0" layoutY="401.0" prefHeight="25.0" prefWidth="54.0" />
-                     <TextField layoutX="50.0" layoutY="436.0" prefHeight="25.0" prefWidth="54.0" />
-                     <TextField layoutX="154.0" layoutY="436.0" prefHeight="25.0" prefWidth="54.0" />
-                     <TextField layoutX="254.0" layoutY="436.0" prefHeight="25.0" prefWidth="54.0" />
-                     <TextField layoutX="50.0" layoutY="471.0" prefHeight="25.0" prefWidth="54.0" />
-                     <TextField layoutX="154.0" layoutY="471.0" prefHeight="25.0" prefWidth="54.0" />
-                     <TextField layoutX="254.0" layoutY="471.0" prefHeight="25.0" prefWidth="54.0" />
+                     <TextField fx:id="Rx" layoutX="154.0" layoutY="401.0" prefHeight="25.0" prefWidth="54.0" text="0" />
+                     <TextField fx:id="Tx" layoutX="254.0" layoutY="401.0" prefHeight="25.0" prefWidth="54.0" text="0" />
+                     <TextField fx:id="Sy" layoutX="50.0" layoutY="436.0" prefHeight="25.0" prefWidth="54.0" text="0" />
+                     <TextField fx:id="Ry" layoutX="154.0" layoutY="436.0" prefHeight="25.0" prefWidth="54.0" text="0" />
+                     <TextField fx:id="Ty" layoutX="254.0" layoutY="436.0" prefHeight="25.0" prefWidth="54.0" text="0" />
+                     <TextField fx:id="Sz" layoutX="50.0" layoutY="471.0" prefHeight="25.0" prefWidth="54.0" text="0" />
+                     <TextField fx:id="Rz" layoutX="154.0" layoutY="471.0" prefHeight="25.0" prefWidth="54.0" text="0" />
+                     <TextField fx:id="Tz" layoutX="254.0" layoutY="471.0" prefHeight="25.0" prefWidth="54.0" text="0" />
                      <Text fill="WHITE" layoutX="32.0" layoutY="418.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X:" />
                      <Text fill="WHITE" layoutX="32.0" layoutY="453.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Y:" />
                      <Text fill="WHITE" layoutX="32.0" layoutY="487.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Z:" />
@@ -90,7 +90,13 @@
                      <Text fill="WHITE" layoutX="236.0" layoutY="417.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X:" />
                      <Text fill="WHITE" layoutX="236.0" layoutY="452.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Y:" />
                      <Text fill="WHITE" layoutX="236.0" layoutY="487.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Z:" />
-                     <Button layoutX="51.0" layoutY="524.0" mnemonicParsing="false" text="Выполнить преобразования" />
+                     <Button fx:id="convert" layoutX="29.0" layoutY="525.0" mnemonicParsing="false" onMouseClicked="#convert" text="Выполнить преобразования" />
+                     <Button layoutX="29.0" layoutY="569.0" mnemonicParsing="false" onAction="#Rotate90x" text="Повернуть на 90 по Х" AnchorPane.leftAnchor="29.0" AnchorPane.topAnchor="569.0" />
+                     <Button layoutX="30.0" layoutY="601.0" mnemonicParsing="false" onAction="#Rotate90y" text="Повернуть на 90 по Y" AnchorPane.leftAnchor="29.0" AnchorPane.topAnchor="601.0" />
+                     <Button layoutX="29.0" layoutY="635.0" mnemonicParsing="false" onAction="#Rotate90z" text="Повернуть на 90 по Х" AnchorPane.leftAnchor="29.0" AnchorPane.topAnchor="633.0" />
+                     <Button layoutX="185.0" layoutY="569.0" mnemonicParsing="false" onAction="#increase2" text="Увеличить в 2 раза" AnchorPane.leftAnchor="182.0" AnchorPane.rightAnchor="17.0" />
+                     <Button layoutX="182.0" layoutY="601.0" mnemonicParsing="false" onAction="#reduce2" text="Уменьшить в 2 раза" AnchorPane.leftAnchor="182.0" AnchorPane.rightAnchor="17.0" />
+                     <Button layoutX="71.0" layoutY="704.0" mnemonicParsing="false" onAction="#MoveToTheOrigin" text="Перенести в начало координат" />
                   </children>
                </AnchorPane>
          </content>
@@ -99,13 +105,13 @@
          <content>
            <AnchorPane fx:id="cameraPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                   <children>
-                     <Button layoutX="22.0" layoutY="14.0" mnemonicParsing="false" text="Добавить камеру" />
-                     <TextField layoutX="50.0" layoutY="80.0" prefHeight="25.0" prefWidth="93.0" />
-                     <TextField layoutX="204.0" layoutY="80.0" prefHeight="25.0" prefWidth="93.0" />
-                     <TextField layoutX="50.0" layoutY="117.0" prefHeight="25.0" prefWidth="93.0" />
-                     <TextField layoutX="204.0" layoutY="117.0" prefHeight="25.0" prefWidth="93.0" />
-                     <TextField layoutX="50.0" layoutY="155.0" prefHeight="25.0" prefWidth="93.0" />
-                     <TextField layoutX="204.0" layoutY="155.0" prefHeight="25.0" prefWidth="93.0" />
+                     <Button layoutX="22.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#createCamera" text="Добавить камеру" />
+                     <TextField fx:id="eyeX" layoutX="50.0" layoutY="80.0" prefHeight="25.0" prefWidth="93.0" />
+                     <TextField fx:id="targetX" layoutX="204.0" layoutY="80.0" prefHeight="25.0" prefWidth="93.0" />
+                     <TextField fx:id="eyeY" layoutX="50.0" layoutY="117.0" prefHeight="25.0" prefWidth="93.0" />
+                     <TextField fx:id="targetY" layoutX="204.0" layoutY="117.0" prefHeight="25.0" prefWidth="93.0" />
+                     <TextField fx:id="eyeZ" layoutX="50.0" layoutY="155.0" prefHeight="25.0" prefWidth="93.0" />
+                     <TextField fx:id="targetZ" layoutX="204.0" layoutY="155.0" prefHeight="25.0" prefWidth="93.0" />
                      <Text fill="WHITE" layoutX="72.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Позиция" />
                      <Text fill="WHITE" layoutX="197.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Точка направления" />
                      <Text fill="WHITE" layoutX="31.0" layoutY="97.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X:" />

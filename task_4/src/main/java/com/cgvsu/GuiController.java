@@ -41,6 +41,7 @@ public class GuiController {
     final private float TRANSLATION = 0.5F;
 
 
+
     //Поля для управления мышкой
 
     private double startX;
@@ -101,6 +102,17 @@ public class GuiController {
     public TextField Ry;
     public TextField Rz;
     public Button convert;
+
+
+
+    //для добавления камеры
+    public TextField eyeX;
+    public TextField targetX;
+    public TextField eyeY;
+    public TextField targetY;
+    public TextField eyeZ;
+    public TextField targetZ;
+
 
 
     private List<Camera> camerasList = List.of(new Camera(

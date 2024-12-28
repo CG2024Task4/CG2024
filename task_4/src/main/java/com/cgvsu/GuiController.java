@@ -12,6 +12,7 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
@@ -115,11 +116,8 @@ public class GuiController {
 
 
 
-    private List<Camera> camerasList = List.of(new Camera(
-            new Vector3f(0, 0, 100),
-            new Vector3f(0, 0, 0),
-            1.0F, 1, 0.01F, 100));
-    private Camera curCamera = camerasList.get(0);
+    private List<Camera> camerasList = new ArrayList<>();
+    private Camera curCamera;
 
 
     @FXML
@@ -129,6 +127,9 @@ public class GuiController {
 
         timeline = new Timeline();
         timeline.setCycleCount(Animation.INDEFINITE);
+        addNewCamera(new Vector3f(0, 0, 100), new Vector3f(0, 0, 0));
+        curCamera = camerasList.get(0);
+        addCameraButtons();
 
         KeyFrame frame = new KeyFrame(Duration.millis(15), event -> {
             double width = canvas.getWidth();
@@ -343,12 +344,12 @@ public class GuiController {
 
     public void texture(ActionEvent actionEvent) {
     }
-    public void addNewCamera(ActionEvent actionEvent, Vector3f cameraPos, Vector3f targetPos){
+    public void addNewCamera(Vector3f cameraPos, Vector3f targetPos){
         camerasList.add(new Camera(cameraPos, targetPos, 1.0F, 1, 0.01F, 100));
         curCamera = camerasList.get(camerasList.size() - 1);
 
     }
-    public void deleteCamera(ActionEvent actionEvent, int index){
+    public void deleteCamera(int index){
         // Предполагается что индекс у камер будет начинаться с 1
         index -= 1;
         if (camerasList.size() == 1){
@@ -359,16 +360,26 @@ public class GuiController {
             curCamera = camerasList.get(index - 1);
         }
         camerasList.remove(index);
+        cameraPane.getChildren().remove(addedButtonsCamera.get(index));
+        cameraPane.getChildren().remove(deletedButtonsCamera.get(index));
         addedButtonsCamera.remove(index);
         deletedButtonsCamera.remove(index);
         index = 1;
         for (Button button: addedButtonsCamera){
             button.setText("Камера " + index);
+            if (index != 1) {
+                button.setLayoutY((!addedButtonsCamera.isEmpty()) ?
+                        addedButtonsCamera.get(index - 2).getLayoutY() + 70 :
+                        245);
+                deletedButtonsCamera.get(index - 1).setLayoutY((!addedButtonsCamera.isEmpty()) ?
+                        addedButtonsCamera.get(index - 2).getLayoutY() + 70 :
+                        245);
+            }
             index++;
         }
     }
 
-    public void setCurCamera(ActionEvent actionEvent, int index){
+    public void setCurCamera(int index){
         index -= 1;
         curCamera = camerasList.get(index);
     }
@@ -474,15 +485,27 @@ public class GuiController {
 
     public void addCameraButtons() {
         Button addButton = new Button("Камера " + (addedButtonsCamera.size() + 1));
-        addButton.setLayoutY((addedButtonsCamera.size() > 0) ?
-                addedButtonsModel.get(addedButtonsModel.size() - 1).getLayoutY() + 70 :
+        addButton.setLayoutY((!addedButtonsCamera.isEmpty()) ?
+                addedButtonsCamera.get(addedButtonsCamera.size() - 1).getLayoutY() + 70 :
                 245);
         addButton.setLayoutX(20);
+        addButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                setCurCamera(Integer.parseInt(addButton.getText().replace("Камера ", "")));
+            }
+        });
         addedButtonsCamera.add(addButton);
 
         Button deleteButton = new Button("Удалить");
         deleteButton.setLayoutY(addedButtonsCamera.get(addedButtonsCamera.size() - 1).getLayoutY());
         deleteButton.setLayoutX(addedButtonsCamera.get(addedButtonsCamera.size() - 1).getLayoutX() + 85);
+        deleteButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                deleteCamera(Integer.parseInt(addButton.getText().replace("Камера ", "")));
+            }
+        });
         deletedButtonsCamera.add(deleteButton);
 
 
@@ -494,6 +517,12 @@ public class GuiController {
 
     //кнопочка добавит камеру тут добавляется камера
     public void createCamera(MouseEvent mouseEvent) {
+        Vector3f pos = new Vector3f(Float.parseFloat(eyeX.getText()),
+                Float.parseFloat(eyeY.getText()), Float.parseFloat(eyeZ.getText()));
+        Vector3f targetPos = new Vector3f(Float.parseFloat(targetX.getText()),
+                Float.parseFloat(targetY.getText()), Float.parseFloat(targetZ.getText()));
+        addCameraButtons();
+        addNewCamera(pos, targetPos);
 
     }
     //кнопочка преобразовать тут её функция при нажатии

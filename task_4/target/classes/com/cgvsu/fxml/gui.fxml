@@ -46,9 +46,7 @@
             </MenuItem>
         </Menu>
         <Menu mnemonicParsing="false" text="Render Properties">
-            <CheckMenuItem mnemonicParsing="false" onAction="#triangulation" text="Триангуляция" />
             <CheckMenuItem mnemonicParsing="false" onAction="#switchPolygonalGrid" text="Полигональная сетка" />
-            <CheckMenuItem mnemonicParsing="false" onAction="#setRenderStyleToColorFill" selected="true" text="Заполнение цветом" />
             <CheckMenuItem mnemonicParsing="false" onAction="#lightning" text="Освещение" />
             <CheckMenuItem mnemonicParsing="false" onAction="#texture" text="Текстура" />
         </Menu>

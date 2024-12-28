@@ -4,6 +4,7 @@ package com.cgvsu.model;
 
 import com.cgvsu.math.typesVectors.Vector2f;
 import com.cgvsu.math.typesVectors.Vector3f;
+import com.cgvsu.texture.Texture;
 
 import java.util.*;
 
@@ -15,6 +16,18 @@ public class Model {
     public ArrayList<Polygon> polygons = new ArrayList<Polygon>();
     public double xSize = 0;
     private List<Group> groups = new ArrayList<>();
+
+    public String pathTexture = null;
+
+    public Texture texture = null;
+
+    public boolean isActiveTexture = false;
+
+    public boolean isActiveLighting = true;
+
+    public void normalize(){
+        normals = FindNormals.findNormals(this);
+    }
 
     public ArrayList<Vector3f> getVertices() {
         return vertices;

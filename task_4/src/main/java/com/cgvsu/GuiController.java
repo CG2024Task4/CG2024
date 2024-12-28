@@ -72,8 +72,6 @@ public class GuiController {
 
     private boolean polyGrid = false;
 
-    private boolean coloring = true;
-
 
     //кнопки моделей
     public AnchorPane modelPane;
@@ -149,7 +147,7 @@ public class GuiController {
                 for (Model model: modelManager.getModels()) {
                     canvas.getGraphicsContext2D().setStroke(Color.WHITE);
                     RenderEngine.render(canvas.getGraphicsContext2D(), curCamera, model, (int) width, (int) height,
-                            zBuffer, polyGrid, coloring);
+                            zBuffer, polyGrid);
                 }
             }
         });
@@ -178,8 +176,9 @@ public class GuiController {
             triangulatedModel = ObjReader.read(fileContent);
             // Триангуляция и расчёт нормалей
             triangulatedModel.triangulate();
-            modelManager.addModel(oldModel);
-            modelManager.setActiveModel(oldModel);
+            triangulatedModel.normalize();
+            modelManager.addModel(triangulatedModel);
+            modelManager.setActiveModel(triangulatedModel);
             addModelButtons();
         } catch (IOException exception) {
             showError("Ошибка чтения файла", "Не удалось прочитать файл"+ exception.getMessage());
@@ -278,9 +277,6 @@ public class GuiController {
         return result.equals("true");
     }
 
-    public void setRenderStyleToColorFill(ActionEvent actionEvent) {
-        coloring = !coloring;
-    }
 
     public void switchPolygonalGrid(ActionEvent actionEvent) {
         polyGrid = !polyGrid;
@@ -322,20 +318,6 @@ public class GuiController {
         }
         else{
             modelManager.setActiveModel(null);
-        }
-    }
-
-    public void triangulation(ActionEvent actionEvent) {
-        if (triangulated){
-            modelManager.delModels(triangulatedModel);
-            modelManager.addModel(oldModel);
-            modelManager.setActiveModel(oldModel);
-            triangulated = false;
-        } else {
-            modelManager.delModels(oldModel);
-            modelManager.addModel(triangulatedModel);
-            modelManager.setActiveModel(triangulatedModel);
-            triangulated = true;
         }
     }
 

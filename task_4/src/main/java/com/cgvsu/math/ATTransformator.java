@@ -67,8 +67,8 @@ public class ATTransformator {
         }
 
         private ATBuilder rotateX(double rX) {
-            double cosX = Math.cos(rX);
-            double sinX = Math.sin(rX);
+            double cosX = Math.cos(Math.toRadians(rX));
+            double sinX = Math.sin(Math.toRadians(rX));
 
             Matrix4f rotationMatrix = new Matrix4f(new double[][]{
                     {1, 0, 0, 0},
@@ -81,8 +81,8 @@ public class ATTransformator {
         }
 
         private ATBuilder rotateY(double rY) {
-            double cosY = Math.cos(rY);
-            double sinY = Math.sin(rY);
+            double cosY = Math.cos(Math.toRadians(rY));
+            double sinY = Math.sin(Math.toRadians(rY));
 
             Matrix4f rotationMatrix = new Matrix4f(new double[][]{
                     {cosY, 0, sinY, 0},
@@ -95,8 +95,8 @@ public class ATTransformator {
         }
 
         private ATBuilder rotateZ(double rZ) {
-            double cosZ = Math.cos(rZ);
-            double sinZ = Math.sin(rZ);
+            double cosZ = Math.cos(Math.toRadians(rZ));
+            double sinZ = Math.sin(Math.toRadians(rZ));
 
             Matrix4f rotationMatrix = new Matrix4f(new double[][]{
                     {cosZ, sinZ, 0, 0},

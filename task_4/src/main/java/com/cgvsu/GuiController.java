@@ -2,8 +2,11 @@ package com.cgvsu;
 
 import com.cgvsu.SetModels.ModelManager;
 import com.cgvsu.deletevertex.DeleteVertex;
+import com.cgvsu.math.typesMatrix.Matrix4f;
 import com.cgvsu.math.typesVectors.Vector3f;
 import com.cgvsu.model.Model;
+import com.cgvsu.model.ModelTransformer;
+import com.cgvsu.model.TranslationModel;
 import com.cgvsu.objreader.ObjReader;
 import com.cgvsu.objreader.ObjWriter;
 import com.cgvsu.render_engine.Camera;
@@ -32,6 +35,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import com.cgvsu.math.typesVectors.Vector3f;
 
@@ -509,26 +513,50 @@ public class GuiController {
     }
     //кнопочка преобразовать тут её функция при нажатии
     public void convert(MouseEvent mouseEvent) {
+        if (Objects.equals(Tx.getText(), "") || Objects.equals(Ty.getText(), "") || Objects.equals(Tz.getText(), "")
+        || Objects.equals(Sx.getText(), "") || Objects.equals(Sy.getText(), "") || Objects.equals(Sz.getText(), "")
+        || Objects.equals(Rx.getText(), "") || Objects.equals(Ry.getText(), "") || Objects.equals(Rz.getText(), "")) {
+            showError("Ошибка", "Введите необходимые данные!");
+        } else {
+            Matrix4f transposeMatrix = ModelTransformer.modelMatrix(
+                    Double.parseDouble(Tx.getText()), Double.parseDouble(Ty.getText()), Double.parseDouble(Tz.getText()),
+                    Double.parseDouble(Rx.getText()), Double.parseDouble(Ry.getText()), Double.parseDouble(Rz.getText()),
+                    Double.parseDouble(Sx.getText()), Double.parseDouble(Sy.getText()), Double.parseDouble(Sz.getText()));
+            TranslationModel.move(transposeMatrix, modelManager.getActiveModel());
+        }
     }
 
     //быстрые кнопочки для наташи
 
     //кнопочка перенести в начало координат
     public void MoveToTheOrigin(ActionEvent actionEvent) {
+        Vector3f center = modelManager.getActiveModel().getCenter().multiplied(-1);
+        Matrix4f transposeMatrix = ModelTransformer.translateMatrix(center.getX(), center.getY(), center.getZ());
+        TranslationModel.move(transposeMatrix, modelManager.getActiveModel());
     }
 
     public void Rotate90x(ActionEvent actionEvent) {
+        Matrix4f transposeMatrix = ModelTransformer.rotateMatrix(90, 0, 0);
+        TranslationModel.move(transposeMatrix, modelManager.getActiveModel());
     }
 
     public void Rotate90y(ActionEvent actionEvent) {
+        Matrix4f transposeMatrix = ModelTransformer.rotateMatrix(0, 90, 0);
+        TranslationModel.move(transposeMatrix, modelManager.getActiveModel());
     }
 
     public void Rotate90z(ActionEvent actionEvent) {
+        Matrix4f transposeMatrix = ModelTransformer.rotateMatrix(0, 0, 90);
+        TranslationModel.move(transposeMatrix, modelManager.getActiveModel());
     }
     //Увеличить в 2 раза
     public void increase2(ActionEvent actionEvent) {
+        Matrix4f transposeMatrix = ModelTransformer.scaleMatrix(2, 2, 2);
+        TranslationModel.move(transposeMatrix, modelManager.getActiveModel());
     }
     //Уменьшить в 2 раза
     public void reduce2(ActionEvent actionEvent) {
+        Matrix4f transposeMatrix = ModelTransformer.scaleMatrix(0.5, 0.5, 0.5);
+        TranslationModel.move(transposeMatrix, modelManager.getActiveModel());
     }
 }

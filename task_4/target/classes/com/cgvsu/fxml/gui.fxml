@@ -67,18 +67,18 @@
                          <AnchorPane fx:id="modelPane" minHeight="0.0" minWidth="0.0" prefHeight="1000.0" prefWidth="285.0" />
                        </content>
                      </ScrollPane>
-                     <TextField fx:id="Sx" layoutX="50.0" layoutY="401.0" prefHeight="25.0" prefWidth="54.0" text="0" />
+                     <TextField fx:id="Tx" layoutX="50.0" layoutY="401.0" prefHeight="25.0" prefWidth="54.0" text="0" />
                      <Text fill="WHITE" layoutX="37.0" layoutY="389.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Перемещение" />
                      <Text fill="WHITE" layoutX="157.0" layoutY="389.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Поворот" />
                      <Text fill="WHITE" layoutX="256.0" layoutY="389.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Масштаб" />
                      <TextField fx:id="Rx" layoutX="154.0" layoutY="401.0" prefHeight="25.0" prefWidth="54.0" text="0" />
-                     <TextField fx:id="Tx" layoutX="254.0" layoutY="401.0" prefHeight="25.0" prefWidth="54.0" text="0" />
-                     <TextField fx:id="Sy" layoutX="50.0" layoutY="436.0" prefHeight="25.0" prefWidth="54.0" text="0" />
+                     <TextField fx:id="Sx" layoutX="254.0" layoutY="401.0" prefHeight="25.0" prefWidth="54.0" text="1" />
+                     <TextField fx:id="Ty" layoutX="50.0" layoutY="436.0" prefHeight="25.0" prefWidth="54.0" text="0" />
                      <TextField fx:id="Ry" layoutX="154.0" layoutY="436.0" prefHeight="25.0" prefWidth="54.0" text="0" />
-                     <TextField fx:id="Ty" layoutX="254.0" layoutY="436.0" prefHeight="25.0" prefWidth="54.0" text="0" />
-                     <TextField fx:id="Sz" layoutX="50.0" layoutY="471.0" prefHeight="25.0" prefWidth="54.0" text="0" />
+                     <TextField fx:id="Sy" layoutX="254.0" layoutY="436.0" prefHeight="25.0" prefWidth="54.0" text="1" />
+                     <TextField fx:id="Tz" layoutX="50.0" layoutY="471.0" prefHeight="25.0" prefWidth="54.0" text="0" />
                      <TextField fx:id="Rz" layoutX="154.0" layoutY="471.0" prefHeight="25.0" prefWidth="54.0" text="0" />
-                     <TextField fx:id="Tz" layoutX="254.0" layoutY="471.0" prefHeight="25.0" prefWidth="54.0" text="0" />
+                     <TextField fx:id="Sz" layoutX="254.0" layoutY="471.0" prefHeight="25.0" prefWidth="54.0" text="1" />
                      <Text fill="WHITE" layoutX="32.0" layoutY="418.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X:" />
                      <Text fill="WHITE" layoutX="32.0" layoutY="453.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Y:" />
                      <Text fill="WHITE" layoutX="32.0" layoutY="487.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Z:" />

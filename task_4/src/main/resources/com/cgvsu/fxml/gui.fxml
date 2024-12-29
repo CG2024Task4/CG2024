@@ -46,7 +46,6 @@
             </MenuItem>
         </Menu>
         <Menu mnemonicParsing="false" text="Render Properties">
-            <CheckMenuItem mnemonicParsing="false" onAction="#switchPolygonalGrid" text="Полигональная сетка" />
             <CheckMenuItem mnemonicParsing="false" onAction="#lightning" text="Освещение" />
             <CheckMenuItem mnemonicParsing="false" onAction="#texture" text="Текстура" />
         </Menu>

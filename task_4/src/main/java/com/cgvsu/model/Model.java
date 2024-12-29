@@ -5,6 +5,7 @@ package com.cgvsu.model;
 import com.cgvsu.math.typesVectors.Vector2f;
 import com.cgvsu.math.typesVectors.Vector3f;
 import com.cgvsu.texture.Texture;
+import javafx.scene.paint.Color;
 
 import java.util.*;
 
@@ -23,7 +24,11 @@ public class Model {
 
     public boolean isActiveTexture = false;
 
-    public boolean isActiveLighting = true;
+    public boolean isActiveLighting = false;
+
+    public boolean isActivePolyGrid = false;
+
+    public Color color = Color.DARKGRAY;
 
     public void normalize(){
         normals = FindNormals.findNormals(this);

@@ -16,7 +16,6 @@ public class Rasterization {
             final double[] arrZ,
             final Color[] colors,
             double[][] zBuffer,
-            boolean polyGrid,
             Model mesh,
             Vector2f[] textures,
             double[] light,
@@ -47,7 +46,7 @@ public class Rasterization {
                     int[] rgb = getGradientCoordinatesRGB(barizenticCoordinate, colors);
                     if (z < zBuffer[x][y]) {
                         zBuffer[x][y] = z;
-                        if ((barizenticCoordinate[0] < 0.01 || barizenticCoordinate[1] < 0.01 || barizenticCoordinate[2] < 0.01) & polyGrid) {
+                        if ((barizenticCoordinate[0] < 0.01 || barizenticCoordinate[1] < 0.01 || barizenticCoordinate[2] < 0.01) & mesh.isActivePolyGrid) {
                             pixelWriter.setColor(x, y, Color.WHITE);
                             continue;
                         } else if (mesh.isActiveTexture) {
@@ -83,7 +82,7 @@ public class Rasterization {
                     int[] rgb = getGradientCoordinatesRGB(barizenticCoordinate, colors);
                     if (z < zBuffer[x][y]) {
                         zBuffer[x][y] = z;
-                        if ((barizenticCoordinate[0] < 0.01 || barizenticCoordinate[1] < 0.01 || barizenticCoordinate[2] < 0.01) & polyGrid) {
+                        if ((barizenticCoordinate[0] < 0.01 || barizenticCoordinate[1] < 0.01 || barizenticCoordinate[2] < 0.01) & mesh.isActivePolyGrid) {
                             pixelWriter.setColor(x, y, Color.WHITE);
                             continue;
                         }else if (mesh.isActiveTexture) {
@@ -136,11 +135,11 @@ public class Rasterization {
         if (y[0] > y[1]) {
             swap(x, y, z, c, n, t, 0, 1);
         }
+        if (y[0] > y[2]) {
+            swap(x, y, z, c, n, t, 0, 2);
+        }
         if (y[1] > y[2]) {
             swap(x, y, z, c, n, t, 1, 2);
-        }
-        if (y[0] > y[1]) {
-            swap(x, y, z, c, n, t, 0, 1);
         }
     }
 

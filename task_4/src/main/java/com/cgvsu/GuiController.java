@@ -70,11 +70,7 @@ public class GuiController {
 
     private Model triangulatedModel = null;
 
-    private boolean triangulated = false;
-
     private ModelManager modelManager = new ModelManager();
-
-    private boolean polyGrid = false;
 
 
     //кнопки моделей
@@ -151,7 +147,7 @@ public class GuiController {
                 for (Model model: modelManager.getModels()) {
                     canvas.getGraphicsContext2D().setStroke(Color.WHITE);
                     RenderEngine.render(canvas.getGraphicsContext2D(), curCamera, model, (int) width, (int) height,
-                            zBuffer, polyGrid);
+                            zBuffer);
                 }
             }
         });
@@ -183,7 +179,7 @@ public class GuiController {
             triangulatedModel.normalize();
             modelManager.addModel(triangulatedModel);
             modelManager.setActiveModel(triangulatedModel);
-            addModelButtons();
+            addModelButtons(triangulatedModel);
         } catch (IOException exception) {
             showError("Ошибка чтения файла", "Не удалось прочитать файл"+ exception.getMessage());
         } /*catch (InvalidFileFormatException exception) {
@@ -279,10 +275,6 @@ public class GuiController {
         String result = dialog.showAndWait().orElse("false");
 
         return result.equals("true");
-    }
-
-    public void switchPolygonalGrid(ActionEvent actionEvent) {
-        polyGrid = !polyGrid;
     }
 
     public void chooseModel(ActionEvent actionEvent) {
@@ -401,12 +393,18 @@ public class GuiController {
     }
 
 
-    public void addModelButtons() {
+    public void addModelButtons(Model mesh) {
         Button addButton = new Button("Модель " + (addedButtonsModel.size() + 1));
         addButton.setLayoutY((addedButtonsModel.size() > 0) ?
                checkBoxesTriangulation.get(checkBoxesTriangulation.size()-1).getLayoutY() + 50 :
                 20);
         addButton.setLayoutX(20);
+        addButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                modelManager.setActiveModel(mesh);
+            }
+        });
         addedButtonsModel.add(addButton);
 
         Button deleteButton = new Button("Удалить");
@@ -426,6 +424,12 @@ public class GuiController {
         checkBoxGrid.setLayoutY(choiceModelRadioButtons.get(choiceModelRadioButtons.size() - 1).getLayoutY() + 40);
         checkBoxGrid.setLayoutX(20);
         checkBoxGrid.getStyleClass().add("checkbox"); // Применение стиля
+        checkBoxGrid.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                mesh.isActivePolyGrid = !mesh.isActivePolyGrid;
+            }
+        });
         checkBoxesGrid.add(checkBoxGrid);
 
         //Тексутры
@@ -433,6 +437,32 @@ public class GuiController {
         checkBoxTexture.setLayoutY(checkBoxesGrid.get(checkBoxesGrid.size() - 1).getLayoutY() + 20);
         checkBoxTexture.setLayoutX(checkBoxesGrid.get(checkBoxesGrid.size() - 1).getLayoutX());
         checkBoxTexture.getStyleClass().add("checkbox"); // Применение стиля
+        checkBoxTexture.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                if (mesh.isActiveTexture){
+                    mesh.isActiveTexture = false;
+                    return;
+                }
+                if (mesh.pathTexture != null){
+                    mesh.isActiveTexture = true;
+                } else {
+                    FileChooser fileChooser = new FileChooser();
+                    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Texture (*.png, *.jpg)", "*.png", "*.jpg"));
+                    fileChooser.setTitle("Load Texture");
+                    fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+
+                    File file = fileChooser.showOpenDialog((Stage) canvas.getScene().getWindow());
+                    if (file == null) {
+                        return;
+                    }
+
+                    Path fileName = Path.of(file.getAbsolutePath());
+                    mesh.pathTexture = String.valueOf(fileName);
+                    mesh.isActiveTexture = true;
+                }
+            }
+        });
         checkBoxesTexture.add(checkBoxTexture);
 
         // Освещение
@@ -440,6 +470,13 @@ public class GuiController {
         checkBoxLighting.setLayoutY(checkBoxesTexture.get(checkBoxesTexture.size() - 1).getLayoutY() + 20);
         checkBoxLighting.setLayoutX(checkBoxesTexture.get(checkBoxesTexture.size() - 1).getLayoutX());
         checkBoxLighting.getStyleClass().add("checkbox"); // Применение стиля
+        checkBoxLighting.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                mesh.isActiveLighting = !mesh.isActiveLighting;
+            }
+        });
+        checkBoxesGrid.add(checkBoxGrid);
         checkBoxesLighting.add(checkBoxLighting);
 
         // Триангуляция

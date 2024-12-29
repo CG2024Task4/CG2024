@@ -21,8 +21,7 @@ public class RenderEngine {
             final Model mesh,
             final int width,
             final int height,
-            double[][] zBuffer,
-            boolean polyGrid) {
+            double[][] zBuffer) {
 
         // Матрицы модели, вида и проекции
         Matrix4f modelMatrix = rotateScaleTranslate(mesh);
@@ -63,9 +62,9 @@ public class RenderEngine {
             int[] arrX = {(int) resultPoints.get(0).getX(), (int) resultPoints.get(1).getX(), (int) resultPoints.get(2).getX()};
             int[] arrY = {(int) resultPoints.get(0).getY(), (int) resultPoints.get(1).getY(), (int) resultPoints.get(2).getY()};
             double[] arrZ = {arrayZ.get(0), arrayZ.get(1), arrayZ.get(2)};
-            javafx.scene.paint.Color[] colors = {Color.DARKGRAY, Color.DARKGRAY, Color.DARKGRAY};
+            javafx.scene.paint.Color[] colors = {mesh.color, mesh.color, mesh.color};
             double[] light = new double[]{viewMatrix.get(0, 2), viewMatrix.get(1, 2), viewMatrix.get(2, 2)};
-            Rasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, colors, zBuffer, polyGrid, mesh, textures, light, normals);
+            Rasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, colors, zBuffer, mesh, textures, light, normals);
         }
     }
 }

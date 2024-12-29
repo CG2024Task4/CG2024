@@ -166,14 +166,14 @@ public class Rasterization {
 
     public static double[] getGradientCoordinatesTexture(double[] barizentric, Vector2f[] texture) {
         return new double[] {(barizentric[0] * texture[0].getX()) +  (barizentric[1] * texture[1].getX()) +  (barizentric[2] * texture[2].getX()),
-                (barizentric[0] * texture[0].getX()) + (barizentric[1] * texture[1].getY()) + (barizentric[2] * texture[2].getY())};
+                (barizentric[0] * texture[0].getY()) + (barizentric[1] * texture[1].getY()) + (barizentric[2] * texture[2].getY())};
     }
 
     public static void texture(double[] barizentric, Vector2f[] textures, Model mesh, int[] rgb){
         double[] texture = getGradientCoordinatesTexture(barizentric, textures);
         int u = (int) Math.round(texture[0] * (mesh.texture.wight - 1));
         int v = (int) Math.round(texture[1] * (mesh.texture.height - 1));
-        if (u < mesh.texture.wight && v < mesh.texture.height) {
+        if (u >= 0 && u < mesh.texture.wight && v >= 0 && v < mesh.texture.height) {
             rgb[0] = mesh.texture.pixelData[u][v][0];
             rgb[1] = mesh.texture.pixelData[u][v][1];
             rgb[2] = mesh.texture.pixelData[u][v][2];
@@ -182,7 +182,7 @@ public class Rasterization {
     public static void calculateLight(int[] rgb, double[] light, Vector3f normal){
         double k = 0.5;
         double l = -(light[0] * normal.getX() + light[1] * normal.getY() + light[2] * normal.getZ());
-        if(l < 0){
+        if (l < 0){
             l = 0;
         }
         rgb[0] = Math.min(255, (int) (rgb[0] * (1 - k) + rgb[0] * k * l));

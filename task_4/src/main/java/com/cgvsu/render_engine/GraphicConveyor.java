@@ -10,11 +10,12 @@ import com.cgvsu.model.Model;
 public class GraphicConveyor {
 
     public static Matrix4f rotateScaleTranslate(Model model) {
-        ATTransformator.ATBuilder builder = new ATTransformator.ATBuilder();
-        Vector3f center = model.getCenter().multiplied(-1);
-        ATTransformator transformator = builder.translateByVector(center).build();
-        Matrix4f matrix = transformator.getTransformationMatrix();
-        return matrix;
+//        ATTransformator.ATBuilder builder = new ATTransformator.ATBuilder();
+//        Vector3f center = model.getCenter().multiplied(-1);
+//        ATTransformator transformator = builder.translateByVector(center).build();
+//        Matrix4f matrix = transformator.getTransformationMatrix();
+//        return matrix;
+        return new Matrix4f(true);
     }
 
     public static Matrix4f lookAt(Vector3f eye, Vector3f target) {

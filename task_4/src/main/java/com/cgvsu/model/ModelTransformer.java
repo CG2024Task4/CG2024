@@ -1,6 +1,7 @@
 package com.cgvsu.model;
 
 import com.cgvsu.math.ATTransformator;
+import com.cgvsu.math.core.MatrixUtils;
 import com.cgvsu.math.typesVectors.Vector3f;
 import com.cgvsu.math.typesMatrix.Matrix4f;
 
@@ -12,9 +13,7 @@ public class ModelTransformer {
         Matrix4f transitionMatrix = translateMatrix(tx, ty, tz);
         Matrix4f rotationMatrix = rotateMatrix(rX, rY, rZ);
         Matrix4f scaleMatrix = scaleMatrix(sx, sy, sz);
-        modelMatrix = modelMatrix.multiplied(transitionMatrix);
-        modelMatrix = modelMatrix.multiplied(rotationMatrix);
-        modelMatrix = modelMatrix.multiplied(scaleMatrix);
+        modelMatrix = MatrixUtils.multiplied(transitionMatrix, rotationMatrix, scaleMatrix, modelMatrix);
         return modelMatrix;
     }
 

@@ -281,18 +281,9 @@ public class GuiController {
         return result.equals("true");
     }
 
-
     public void switchPolygonalGrid(ActionEvent actionEvent) {
         polyGrid = !polyGrid;
     }
-    @FXML
-    public void onModelSelectionChanged(ActionEvent actionEvent) {
-//        ATTransformator.ATBuilder builder = new ATTransformator.ATBuilder();
-//        ATTransformator transformator = builder.translateByCoordinates(0, 0, 0).build();
-//        Matrix4f matrix = transformator.getTransformationMatrix();
-//        modelManager.getActiveModel() =
-    }
-
 
     public void chooseModel(ActionEvent actionEvent) {
         TextInputDialog dialog = new TextInputDialog();

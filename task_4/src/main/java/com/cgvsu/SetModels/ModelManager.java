@@ -27,4 +27,6 @@ public class ModelManager {
     public void delModels(Model model){
         models.remove(model);
     }
+
+    public void cleanModels(){models.clear();}
 }

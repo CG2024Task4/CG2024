@@ -16,38 +16,32 @@
 
 <AnchorPane fx:id="anchorPane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cgvsu.GuiController">
     <MenuBar>
-        <Menu mnemonicParsing="false" text="File">
-            <MenuItem mnemonicParsing="false" onAction="#onOpenModelMenuItemClick" text="Load Model">
+        <Menu mnemonicParsing="false" text="Файл">
+            <MenuItem mnemonicParsing="false" onAction="#onOpenModelMenuItemClick" text="Загрузить модель">
             <accelerator>
                 <KeyCodeCombination alt="UP" code="F" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
             </accelerator>
             </MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#saveModel" text="Save Model">
+            <MenuItem mnemonicParsing="false" onAction="#saveModel" text="Сохранить модель">
                 <accelerator>
                     <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                 </accelerator>
             </MenuItem>
         </Menu>
-        <Menu mnemonicParsing="false" text="Camera Options">
-            <!--Марина, добавь сюда описание того, что на левую кнопку мы поворачиваемся по орбите,
-            а при нажатии на колёсико мы двигаем камеру в плоскости. тип того
-            если что первый метод Camera Orbit, а второй Camera Move-->
-        </Menu>
-        <Menu mnemonicParsing="false" text="Change the model">
-            <MenuItem mnemonicParsing="false" onAction="#delvertex" text="Delete vertices">
+        <Menu mnemonicParsing="false" text="Изменить модель">
+            <MenuItem mnemonicParsing="false" onAction="#delvertex" text="Удалить вершины">
             </MenuItem>
-            <MenuItem mnemonicParsing="false" text="Delete polygon">
+            <MenuItem mnemonicParsing="false" onAction="#DelFace" text="Удалить полигоны">
             </MenuItem>
         </Menu>
-        <Menu mnemonicParsing="false" text="Model">
-            <MenuItem mnemonicParsing="false" onAction="#chooseModel" text="Choose the model">
-            </MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#DeleteModel" text="Delete the model">
-            </MenuItem>
-        </Menu>
-        <Menu mnemonicParsing="false" text="Render Properties">
+        <Menu mnemonicParsing="false" text="Свойства рендеринга">
             <CheckMenuItem mnemonicParsing="false" onAction="#lightning" text="Освещение" />
             <CheckMenuItem mnemonicParsing="false" onAction="#texture" text="Текстура" />
+        </Menu >
+        <Menu mnemonicParsing="false" text="Сцена">
+            <MenuItem mnemonicParsing="false" onAction="#cleanScene" text="Очистить сцену">
+            </MenuItem>
+
         </Menu>
     </MenuBar>
 
@@ -59,8 +53,7 @@
          <content>
            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                   <children>
-                     <Button layoutX="204.0" layoutY="779.0" mnemonicParsing="false" text="Сохранить" />
-                     <Button layoutX="56.0" layoutY="779.0" mnemonicParsing="false" text="Удалить" />
+                     <Button layoutX="204.0" layoutY="779.0" mnemonicParsing="false" onAction="#saveModel" text="Сохранить" />
                      <ScrollPane layoutX="19.0" layoutY="26.0" prefHeight="315.0" prefWidth="288.0">
                        <content>
                          <AnchorPane fx:id="modelPane" minHeight="0.0" minWidth="0.0" prefHeight="1000.0" prefWidth="285.0" />

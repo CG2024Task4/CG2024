@@ -1,6 +1,7 @@
 package com.cgvsu;
 
 import com.cgvsu.SetModels.ModelManager;
+import com.cgvsu.deletevertex.PolygonRemover;
 import com.cgvsu.deletevertex.DeleteVertex;
 import com.cgvsu.math.typesMatrix.Matrix4f;
 import com.cgvsu.math.typesVectors.Vector3f;
@@ -19,9 +20,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
@@ -79,8 +78,6 @@ public class GuiController {
     private List<CheckBox> checkBoxesTexture = new ArrayList<>();
     private List<CheckBox> checkBoxesLighting = new ArrayList<>();
     private List<CheckBox> checkBoxesGrid = new ArrayList<>();
-    private List<RadioButton> choiceModelRadioButtons = new ArrayList<>();
-    private List<CheckBox> checkBoxesTriangulation = new ArrayList<>();
     //кнопки удаления моделей
     private List<Button> deletedButtonsModel = new ArrayList<>();
 
@@ -154,7 +151,57 @@ public class GuiController {
 
         timeline.getKeyFrames().add(frame);
         timeline.play();
+
+        setupDragAndDrop();
     }
+
+    private void setupDragAndDrop() {
+        canvas.setOnDragOver(event -> {
+            if (event.getGestureSource() != canvas && event.getDragboard().hasFiles()) {
+                File file = event.getDragboard().getFiles().get(0);
+                if (file.getName().toLowerCase().endsWith(".obj")) {
+                    event.acceptTransferModes(TransferMode.COPY);
+                }
+            }
+            event.consume();
+        });
+
+        canvas.setOnDragDropped(event -> {
+            Dragboard dragboard = event.getDragboard();
+            if (dragboard.hasFiles()) {
+                File file = dragboard.getFiles().get(0);
+                if (file.getName().toLowerCase().endsWith(".obj")) {
+                    loadObjFile(file);
+                } else {
+                    showError("Неподдерживаемый файл", "Пожалуйста, выберите файл с расширением .obj");
+                }
+            }
+            event.setDropCompleted(true);
+            event.consume();
+        });
+    }
+    private void loadObjFile(File file) {
+        Path fileName = Path.of(file.getAbsolutePath());
+        try {
+            String fileContent = Files.readString(fileName);
+            oldModel = ObjReader.read(fileContent);
+            triangulatedModel = ObjReader.read(fileContent);
+
+            // Триангуляция и расчёт нормалей
+            triangulatedModel.triangulate();
+            triangulatedModel.normalize();
+
+            modelManager.addModel(triangulatedModel);
+            modelManager.setActiveModel(triangulatedModel);
+            addModelButtons(triangulatedModel);
+        } catch (IOException exception) {
+            showError("Ошибка чтения файла", "Не удалось прочитать файл: " + exception.getMessage());
+        } catch (Exception exception) {
+            showError("Неизвестная ошибка", "Произошла неизвестная ошибка: " + exception.getMessage());
+        }
+    }
+
+
 
     @FXML
     private void onOpenModelMenuItemClick() {
@@ -182,9 +229,8 @@ public class GuiController {
             addModelButtons(triangulatedModel);
         } catch (IOException exception) {
             showError("Ошибка чтения файла", "Не удалось прочитать файл"+ exception.getMessage());
-        } /*catch (InvalidFileFormatException exception) {
-            showError("Некорректный файл", "Файл имеет неправильный формат"+ exception.getMessage());
-        }*/ catch (Exception exception) {
+        }
+        catch (Exception exception) {
             showError("Неизвестная ошибка", "Произошла неизвестная ошибка" + exception.getMessage());
         }
     }
@@ -197,8 +243,7 @@ public class GuiController {
         if (modelManager.getActiveModel()!=null) {
             if (file != null) {
                 String filename = file.getAbsolutePath();
-                // Создаем экземпляр ObjWriterClass для записи модели
-                ObjWriter.write(modelManager.getActiveModel(), filename);  // Сохраняем модель
+                ObjWriter.write(modelManager.getActiveModel(), filename);
 
                 System.out.println("Модель сохранена в файл: " + filename);
             } else {
@@ -209,7 +254,7 @@ public class GuiController {
             showError("Ошибка сохранения", "Нет модели");
         }
     }
-    // Метод для отображения сообщения об ошибке
+
     private void showError(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
@@ -220,93 +265,58 @@ public class GuiController {
 
     @FXML
     public void delvertex(ActionEvent actionEvent){
-        // Создаем диалог для ввода списка вершин
+        if (modelManager.getActiveModel()==null){
+            showError("Ошибка","Нельзя удалить что-то в модели, так как модели нет. Загрузите или выберите модель");
+            return;
+        }
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Удалить вершины");
         dialog.setHeaderText("Введите ID вершин для удаления (через запятую):");
         dialog.setContentText("Вершины:");
 
-        // Отображаем диалог и ждем ответа
         String result = dialog.showAndWait().orElse("");
 
         if (!result.isEmpty()) {
-            // Разделяем введенные данные на список вершин и удаляем лишние пробелы
             String[] verticesArray = result.split(",");
             List<Integer> verticesToDelete = new ArrayList<>();
 
-            // Преобразуем строки в целые числа и добавляем в список
             for (String vertexStr : verticesArray) {
                 try {
-                    verticesToDelete.add(Integer.parseInt(vertexStr.trim())); // парсим строку в Integer
+                    verticesToDelete.add(Integer.parseInt(vertexStr.trim()));
                 } catch (NumberFormatException e) {
                     showError("Ошибка ввода", "Некоторые элементы не являются целыми числами.");
-                    return; // Выход из метода, если был неправильный ввод
+                    return;
                 }
             }
             boolean flag1 = askForFlag("Удалять нормали?");
             boolean flag2 = askForFlag("Удалять текстурные вершины?");
-            // Создаем экземпляр DeleteVertex для удаления вершин
 
             DeleteVertex.deleteVertex(modelManager.getActiveModel(),verticesToDelete,flag1,flag2) ;
-            // Удаляем вершины
             activeModelnull();
         } else {
             showError("Ошибка", "Вы не ввели ни одной вершины.");
         }
     }
     private void activeModelnull(){
-        if(modelManager.getActiveModel().getVertices().isEmpty()){
-            System.out.println(1);
-            modelManager.delModels(modelManager.getActiveModel());
-            if (!modelManager.getModels().isEmpty()){
-                modelManager.setActiveModel(modelManager.getModels().get(modelManager.getModels().size()-1));
+        if (modelManager.getActiveModel().getPolygons().isEmpty() || modelManager.getActiveModel().getVertices().isEmpty()) {
+            boolean flag = askForFlag("Модель пуста. Вы хотите её удалить?");
+            if (flag) {
+                modelManager.delModels(modelManager.getActiveModel());
             }
         }
     }
-    // Метод для запроса флажка true/false для каждой вершины
+    // Метод для запроса флажка true/false
     private boolean askForFlag(String headerText) {
-        // Создаем диалог для ввода флажка (true/false)
         ChoiceDialog<String> dialog = new ChoiceDialog<>("Да", "Да", "Нет");
         dialog.setTitle("Выбор флажка");
         dialog.setHeaderText(headerText);
         dialog.setContentText("Выберите флажок:");
 
-        // Отображаем диалог и ждем ответа
         String result = dialog.showAndWait().orElse("false");
 
         return result.equals("true");
     }
 
-    public void chooseModel(ActionEvent actionEvent) {
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Какую модель выбрать?");
-        dialog.setHeaderText("Введите ID модели:");
-        dialog.setContentText("Модель:");
-
-        // Отображаем диалог и ждем ответа
-        String result = dialog.showAndWait().orElse("");
-
-        if (!result.isEmpty()) {
-            try {
-                modelManager.setActiveModel(modelManager.getModels().get(Integer.parseInt(result)-1));
-            } catch (NumberFormatException e) {
-                showError("Ошибка ввода", "Элемент не является целым числом.");
-            }
-            catch (IndexOutOfBoundsException e){
-                showError("Ошибка выбора модели","Индекса такой модели нет");
-            }
-        }
-    }
-
-    public void DeleteModel(ActionEvent actionEvent) {
-        modelManager.delModels(modelManager.getActiveModel());
-        if (!modelManager.getModels().isEmpty()){
-            modelManager.setActiveModel(modelManager.getModels().get(modelManager.getModels().size()-1));
-        }
-        else{
-            modelManager.setActiveModel(null);
-        }
-    }
 
     public void lightning(ActionEvent actionEvent) {
     }
@@ -322,30 +332,43 @@ public class GuiController {
         // Предполагается что индекс у камер будет начинаться с 1
         index -= 1;
         if (camerasList.size() == 1){
+            showError("Ошибка удаления камеры","Если удалить текущую камеру - камер больше не останется!");
             return;
         }
         if (curCamera == camerasList.get(index)){
-            // Марин это тебе место для обработки ошибок
-            curCamera = camerasList.get(index - 1);
+            if (index != 0) {
+                showMessage("Удаление текущей камеры", "Вы перенаправлены на: Камера "+ (index) );
+                curCamera = camerasList.get(index - 1);
+            }
+            else {
+                showMessage("Удаление текущей камеры", "Вы перенаправлены на: Камера "+ (index + 1));
+                curCamera = camerasList.get(index + 1);
+            }
+        }
+
+        //переименовываем кнопки
+        for (int i = 0; i < addedButtonsCamera.size(); i++) {
+            if (i + 1 > index) {
+                addedButtonsCamera.get(i).setText("Камера " + i);
+            }
+        }
+        //смещаем координаты
+        for (int i = addedButtonsCamera.size() - 1; i >= 1; i--) {
+            if (i + 1 > index) {
+                addedButtonsCamera.get(i).setLayoutY(addedButtonsCamera.get(i - 1).getLayoutY());
+
+                deletedButtonsCamera.get(i).setLayoutY(deletedButtonsCamera.get(i - 1).getLayoutY());
+
+            }
         }
         camerasList.remove(index);
         cameraPane.getChildren().remove(addedButtonsCamera.get(index));
         cameraPane.getChildren().remove(deletedButtonsCamera.get(index));
         addedButtonsCamera.remove(index);
         deletedButtonsCamera.remove(index);
-        index = 1;
-        for (Button button: addedButtonsCamera){
-            button.setText("Камера " + index);
-            if (index != 1) {
-                button.setLayoutY((!addedButtonsCamera.isEmpty()) ?
-                        addedButtonsCamera.get(index - 2).getLayoutY() + 70 :
-                        245);
-                deletedButtonsCamera.get(index - 1).setLayoutY((!addedButtonsCamera.isEmpty()) ?
-                        addedButtonsCamera.get(index - 2).getLayoutY() + 70 :
-                        245);
-            }
-            index++;
-        }
+
+
+
     }
 
     public void setCurCamera(int index){
@@ -393,35 +416,57 @@ public class GuiController {
     }
 
 
+
     public void addModelButtons(Model mesh) {
         Button addButton = new Button("Модель " + (addedButtonsModel.size() + 1));
         addButton.setLayoutY((addedButtonsModel.size() > 0) ?
-               checkBoxesTriangulation.get(checkBoxesTriangulation.size()-1).getLayoutY() + 50 :
+               checkBoxesLighting.get(checkBoxesLighting.size()-1).getLayoutY() + 50 :
                 20);
         addButton.setLayoutX(20);
         addButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 modelManager.setActiveModel(mesh);
+                addButton.setStyle("-fx-background-color: #333;");
+                for (Button button: addedButtonsModel) {
+                    if (button != addButton) {
+                        button.setStyle("-fx-background-color: #3c3f41;");
+                    }
+                }
             }
         });
+
         addedButtonsModel.add(addButton);
+        for (int i =  0; i < addedButtonsModel.size(); i++){
+            if( i == addedButtonsModel.size()-1){
+                addedButtonsModel.get(i).setStyle("-fx-background-color: #333;");
+            }
+            else{
+                addedButtonsModel.get(i).setStyle("-fx-background-color: #3c3f41;");
+            }
+        }
 
         Button deleteButton = new Button("Удалить");
         deleteButton.setLayoutY(addedButtonsModel.get(addedButtonsModel.size() - 1).getLayoutY());
         deleteButton.setLayoutX(addedButtonsModel.get(addedButtonsModel.size() - 1).getLayoutX() + 85);
+        deleteButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                deleteModel(Integer.parseInt(addButton.getText().replace("Модель ", "")));
+                for (int i = 0; i < addedButtonsModel.size(); i++){
+                    if (modelManager.getModels().get(i) == modelManager.getActiveModel()){
+                        addedButtonsModel.get(i).setStyle("-fx-background-color: #333;");
+                    }
+                }
+            }
+        });
         deletedButtonsModel.add(deleteButton);
-
-        RadioButton radioButton = new RadioButton();
-        radioButton.setLayoutY(deletedButtonsModel.get(deletedButtonsModel.size() - 1).getLayoutY() + 4);
-        radioButton.setLayoutX(deletedButtonsModel.get(deletedButtonsModel.size() - 1).getLayoutX() + 75);
-        choiceModelRadioButtons.add(radioButton);
 
 
 
         //Сетка
         CheckBox checkBoxGrid = new CheckBox("Сетка");
-        checkBoxGrid.setLayoutY(choiceModelRadioButtons.get(choiceModelRadioButtons.size() - 1).getLayoutY() + 40);
+        checkBoxGrid.setLayoutY(addedButtonsModel.get(addedButtonsModel.size() - 1).getLayoutY() + 40);
         checkBoxGrid.setLayoutX(20);
         checkBoxGrid.getStyleClass().add("checkbox"); // Применение стиля
         checkBoxGrid.setOnAction(new EventHandler<ActionEvent>() {
@@ -476,25 +521,72 @@ public class GuiController {
                 mesh.isActiveLighting = !mesh.isActiveLighting;
             }
         });
-        checkBoxesGrid.add(checkBoxGrid);
         checkBoxesLighting.add(checkBoxLighting);
 
-        // Триангуляция
-        CheckBox checkBoxTriangulation = new CheckBox("Триангуляция");
-        checkBoxTriangulation.setLayoutY(checkBoxesTexture.get(checkBoxesLighting.size() - 1).getLayoutY() + 40);
-        checkBoxTriangulation.setLayoutX(checkBoxesTexture.get(checkBoxesLighting.size() - 1).getLayoutX());
-        checkBoxTriangulation.getStyleClass().add("checkbox"); // Применение стиля
-        checkBoxesTriangulation.add(checkBoxTriangulation);
 
 
         modelPane.getChildren().add(addButton);
         modelPane.getChildren().add(deleteButton);
-        modelPane.getChildren().add(radioButton);
         modelPane.getChildren().add(checkBoxGrid);
         modelPane.getChildren().add(checkBoxTexture);
         modelPane.getChildren().add(checkBoxLighting);
-        modelPane.getChildren().add(checkBoxTriangulation);
     }
+
+
+
+
+    public void deleteModel(int index) {
+        if (modelManager.getActiveModel() == modelManager.getModels().get(index - 1)){
+            if (index != 1) {
+                showMessage("Удаление текущей модели", "Выбрана модель "+ index);
+                modelManager.setActiveModel(modelManager.getModels().get(index - 2));
+            } else if (modelManager.getModels().size()!=1) {
+                showMessage("Удаление текущей модели", "Выбрана модель "+ (index+1));
+                modelManager.setActiveModel(modelManager.getModels().get(index ));
+            }
+            else
+            {
+                showMessage("Удаление текущей модели", "Нет выбранной модели.");
+                modelManager.setActiveModel(null);
+            }
+        }
+
+
+        modelManager.delModels(modelManager.getModels().get(index - 1));
+        modelPane.getChildren().remove(addedButtonsModel.get(index - 1));
+        modelPane.getChildren().remove(deletedButtonsModel.get(index - 1));
+        modelPane.getChildren().remove(checkBoxesGrid.get(index - 1));
+        modelPane.getChildren().remove(checkBoxesTexture.get(index - 1));
+        modelPane.getChildren().remove(checkBoxesLighting.get(index - 1));
+        //переименовываем кнопки
+        for (int i = 0; i < addedButtonsModel.size(); i++) {
+            if (i + 1 > index) {
+                addedButtonsModel.get(i).setText("Модель " + i);
+            }
+        }
+        //смещаем координаты
+        for (int i = addedButtonsModel.size() - 1; i >= 1; i--) {
+            if (i + 1 > index) {
+                addedButtonsModel.get(i).setLayoutY(addedButtonsModel.get(i - 1).getLayoutY());
+
+                deletedButtonsModel.get(i).setLayoutY(deletedButtonsModel.get(i - 1).getLayoutY());
+                checkBoxesGrid.get(i).setLayoutY(checkBoxesGrid.get(i - 1).getLayoutY());
+                checkBoxesTexture.get(i).setLayoutY(checkBoxesTexture.get(i - 1).getLayoutY());
+                checkBoxesLighting.get(i).setLayoutY(checkBoxesLighting.get(i - 1).getLayoutY());
+            }
+        }
+        addedButtonsModel.remove(index - 1);
+        deletedButtonsModel.remove(index - 1);
+        checkBoxesGrid.remove(index - 1);
+        checkBoxesTexture.remove(index - 1);
+        checkBoxesLighting.remove(index - 1);
+
+
+    }
+
+
+
+
 
 
     public void addCameraButtons() {
@@ -507,9 +599,23 @@ public class GuiController {
             @Override
             public void handle(ActionEvent event) {
                 setCurCamera(Integer.parseInt(addButton.getText().replace("Камера ", "")));
+                addButton.setStyle("-fx-background-color: #333;");
+                for (Button button: addedButtonsCamera) {
+                    if (button != addButton) {
+                        button.setStyle("-fx-background-color: #3c3f41;");
+                    }
+                }
             }
         });
         addedButtonsCamera.add(addButton);
+        for (int i =  0; i < addedButtonsCamera.size(); i++){
+            if( i == addedButtonsCamera.size()-1){
+                addedButtonsCamera.get(i).setStyle("-fx-background-color: #333;");
+            }
+            else{
+                addedButtonsCamera.get(i).setStyle("-fx-background-color: #3c3f41;");
+            }
+        }
 
         Button deleteButton = new Button("Удалить");
         deleteButton.setLayoutY(addedButtonsCamera.get(addedButtonsCamera.size() - 1).getLayoutY());
@@ -518,6 +624,11 @@ public class GuiController {
             @Override
             public void handle(ActionEvent event) {
                 deleteCamera(Integer.parseInt(addButton.getText().replace("Камера ", "")));
+                for (int i = 0; i < addedButtonsCamera.size(); i++){
+                    if (camerasList.get(i) == curCamera){
+                        addedButtonsCamera.get(i).setStyle("-fx-background-color: #333;");
+                    }
+                }
             }
         });
         deletedButtonsCamera.add(deleteButton);
@@ -541,6 +652,10 @@ public class GuiController {
     }
     //кнопочка преобразовать тут её функция при нажатии
     public void convert(MouseEvent mouseEvent) {
+        if (modelManager.getActiveModel()==null){
+            showError("Ошибка","Выберите или загрузите модель");
+            return;
+        }
         if (Objects.equals(Tx.getText(), "") || Objects.equals(Ty.getText(), "") || Objects.equals(Tz.getText(), "")
         || Objects.equals(Sx.getText(), "") || Objects.equals(Sy.getText(), "") || Objects.equals(Sz.getText(), "")
         || Objects.equals(Rx.getText(), "") || Objects.equals(Ry.getText(), "") || Objects.equals(Rz.getText(), "")) {
@@ -558,33 +673,114 @@ public class GuiController {
 
     //кнопочка перенести в начало координат
     public void MoveToTheOrigin(ActionEvent actionEvent) {
+        if (modelManager.getActiveModel()==null){
+            showError("Ошибка","Выберите или загрузите модель");
+            return;
+        }
         Vector3f center = modelManager.getActiveModel().getCenter().multiplied(-1);
         Matrix4f transposeMatrix = ModelTransformer.translateMatrix(center.getX(), center.getY(), center.getZ());
         TranslationModel.move(transposeMatrix, modelManager.getActiveModel());
     }
 
     public void Rotate90x(ActionEvent actionEvent) {
+        if (modelManager.getActiveModel()==null){
+            showError("Ошибка","Выберите или загрузите модель");
+            return;
+        }
         Matrix4f transposeMatrix = ModelTransformer.rotateMatrix(90, 0, 0);
         TranslationModel.move(transposeMatrix, modelManager.getActiveModel());
     }
 
     public void Rotate90y(ActionEvent actionEvent) {
+        if (modelManager.getActiveModel()==null){
+            showError("Ошибка","Выберите или загрузите модель");
+            return;
+        }
         Matrix4f transposeMatrix = ModelTransformer.rotateMatrix(0, 90, 0);
         TranslationModel.move(transposeMatrix, modelManager.getActiveModel());
     }
 
     public void Rotate90z(ActionEvent actionEvent) {
+        if (modelManager.getActiveModel()==null){
+            showError("Ошибка","Выберите или загрузите модель");
+            return;
+        }
         Matrix4f transposeMatrix = ModelTransformer.rotateMatrix(0, 0, 90);
         TranslationModel.move(transposeMatrix, modelManager.getActiveModel());
     }
     //Увеличить в 2 раза
     public void increase2(ActionEvent actionEvent) {
+        if (modelManager.getActiveModel()==null){
+            showError("Ошибка","Выберите или загрузите модель");
+            return;
+        }
         Matrix4f transposeMatrix = ModelTransformer.scaleMatrix(2, 2, 2);
         TranslationModel.move(transposeMatrix, modelManager.getActiveModel());
     }
     //Уменьшить в 2 раза
     public void reduce2(ActionEvent actionEvent) {
+        if (modelManager.getActiveModel()==null){
+            showError("Ошибка","Выберите или загрузите модель");
+            return;
+        }
         Matrix4f transposeMatrix = ModelTransformer.scaleMatrix(0.5, 0.5, 0.5);
         TranslationModel.move(transposeMatrix, modelManager.getActiveModel());
+    }
+
+    public void DelFace(ActionEvent actionEvent) {
+        if (modelManager.getActiveModel()==null){
+            showError("Ошибка","Нельзя удалить что-то в модели, так как модели нет. Загрузите или выберите модель");
+            return;
+        }
+        // Создаем диалог для ввода списка вершин
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Удалить Полигон");
+        dialog.setHeaderText("Введите ID Полигона для удаления :");
+        dialog.setContentText("Полигон:");
+
+        // Отображаем диалог и ждем ответа
+        String result = dialog.showAndWait().orElse("");
+
+        if (!result.isEmpty()) {
+            // Разделяем введенные данные на список вершин и удаляем лишние пробелы
+            String[] facesArray = result.split(",");
+            List<Integer> faceToDelete = new ArrayList<>();
+
+            // Преобразуем строки в целые числа и добавляем в список
+            for (String vertexStr : facesArray) {
+                try {
+                    faceToDelete.add(Integer.parseInt(vertexStr.trim())); // парсим строку в Integer
+                } catch (NumberFormatException e) {
+                    showError("Ошибка ввода", "Некоторые элементы не являются целыми числами.");
+                    return; // Выход из метода, если был неправильный ввод
+                }
+            }
+            boolean flag1 = askForFlag("Удалять свободные вершины?");
+            boolean flag2 = askForFlag("Удалять свободные нормали?");
+            boolean flag3 = askForFlag("Удалять свободные текстурные вершины?");
+
+            PolygonRemover.removePolygons(modelManager.getActiveModel(),faceToDelete,flag1,flag2,flag3) ;
+            activeModelnull();
+        } else {
+            showError("Ошибка", "Вы не ввели ни одного полигона.");
+        }
+    }
+
+
+    private void showMessage(String headText, String messageText) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setHeaderText(headText);
+        alert.setContentText(messageText);
+        alert.showAndWait();
+    }
+
+    public void cleanScene(ActionEvent actionEvent) {
+        modelManager.cleanModels();
+        addedButtonsModel.clear();
+        deletedButtonsModel.clear();
+        checkBoxesLighting.clear();
+        checkBoxesTexture.clear();
+        checkBoxesGrid.clear();
+        modelPane.getChildren().clear();
     }
 }

@@ -70,11 +70,7 @@
 
 
 
-Button {
-    -fx-background-color: #5E81AC;
-    -fx-text-fill: white;
-    -fx-border-radius: 5;
-}
+
 
 TextField {
     -fx-background-color: #ECEFF4;

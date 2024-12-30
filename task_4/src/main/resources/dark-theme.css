@@ -57,7 +57,7 @@
 
 .menu-item:focused {
     -fx-background-color: #4b4e50; /* Цвет при фокусе */
-    -fx-border-color: transparent; /* Убираем рамку при фокусе */
+    -fx-border-color: transparent;
 }
 /* рамка доп кнопок*/
 .context-menu {
@@ -70,11 +70,7 @@
 
 
 
-Button {
-    -fx-background-color: #5E81AC;
-    -fx-text-fill: white;
-    -fx-border-radius: 5;
-}
+
 
 TextField {
     -fx-background-color: #ECEFF4;

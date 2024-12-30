@@ -1,0 +1,12 @@
+# Blender 4.0.1
+# www.blender.org
+o Cube
+v 2 10 1
+v 8 2 9
+v 14 12 3
+v 12 5 10
+v 5 13 10
+v 4 4 0
+
+f 1 2 3
+f 4 5 6
